@@ -1,0 +1,9 @@
+Welcome to DotaPack!
+
+Despite the name, DotaPack is no longer purely a DotA 2 server.
+Roles in this server are meant to show which games you are interested in playing with people, you can manage your roles by going to #bot-messages and reacting with the roles that you want, you can also do the same to remove roles that you have.
+link to specific message: https://discordapp.com/channels/244197663925338113/718577003116232805/718577188932288622
+Feel free to @ a role if you want to get a game going, the "Something" role is meant for if you don't have a specific game in mind.
+
+This is P1FR0B, the game coordinator, a bot with a bunch of random functions. If there are any issues or suggestions, feel free to contact .Varas
+If for whatever reason you have left and want to rejoin, you can use this link https://discord.gg/gQ7xgwX
