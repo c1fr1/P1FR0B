@@ -1,5 +1,6 @@
 package bot
 
+import java.io.FileNotFoundException
 import java.io.FileReader
 import java.util.*
 
@@ -17,22 +18,31 @@ object IDS {
 		val tempNames = ArrayList<String>()
 		val tempValues = ArrayList<String>()
 
-		var fr = FileReader("resources/IDS_PUBLIC")
+		try {
+			val fr = FileReader("resources/IDS_PUBLIC")
 
-		fr.forEachLine { line ->
-			if (line.contains(":")) {
-				tempNames.add(line.substringBefore(':').trim(' '))
-				tempValues.add(line.substringAfter(":").trim(' '))
+			fr.forEachLine { line ->
+				if (line.contains(":")) {
+					tempNames.add(line.substringBefore(':').trim())
+					tempValues.add(line.substringAfter(":").trim())
+				}
 			}
+			fr.close()
+		} catch (_ : FileNotFoundException) {
+			Logger.warn("public IDS file missing, this will likely cause many problems, make sure there is a resources/IDS_PUBLIC in the working directory")
 		}
-		fr.close()
-		fr = FileReader("resources/IDS_PRIVATE")
 
-		fr.forEachLine { line ->
-			if (line.contains(":")) {
-				tempNames.add(line.substringBefore(':').trim(' '))
-				tempValues.add(line.substringAfter(":").trim(' '))
+		try {
+			val fr = FileReader("resources/IDS_PRIVATE")
+
+			fr.forEachLine { line ->
+				if (line.contains(":")) {
+					tempNames.add(line.substringBefore(':').trim())
+					tempValues.add(line.substringAfter(":").trim())
+				}
 			}
+		} catch (_ : FileNotFoundException) {
+			Logger.warn("private IDS file missing, this will likely cause many problems, make sure there is a resources/IDS_PRIVATE in the working directory")
 		}
 
 		names = Array(tempNames.size) {i -> tempNames[i]}

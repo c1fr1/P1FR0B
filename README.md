@@ -19,8 +19,9 @@ the `ResponseManager`.
 
 ### Building
 
-At the moment, the only build specification is in Intellij project files, there is a `pom.xml` for
-Maven, but I am bad so there is no run or release goal, only a compile one. Feel free to fix this.
+The build script is [`build.gradle.kts`](build.gradle.kts) which is written with the Kotlin DSL for
+Gradle. You can use the `run` build target (`gradle run`) for testing and debugging, but
+the `shadowJar` target is used for deployment.
 
 # Structure
 
