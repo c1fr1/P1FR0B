@@ -28,7 +28,7 @@ os.mkdir("responses/")
 for hero in db.query(Hero) :
     print(hero.name)
     #os.mkdir("responses/" + hero.name)
-    disallowed = ["ye", "yes", "yup", "no", "oh", "ha", "hah", "uh", "gah", "why", "huh", "almost", "hm", "hmm", "hmmm", "ah", "ahh", "ahhh", "thanks", "thank-you", "hey", "ready", "indeed", "ow", "nope", "sure", "yeah", "oof", "wait", "he", "eh", "yep", "wow", "what", "ooh", "ok", "alright", "next"]
+    disallowed = ["yes", "yup", "no", "oh", "hah", "uh", "gah", "why", "huh", "almost", "hm", "hmm", "hmmm", "ah", "ahh", "ahhh", "thanks", "thank-you", "hey", "ready", "ow", "nope", "sure", "yeah", "oof", "wait", "he", "eh", "yep", "wow", "what", "ooh", "ok", "alright", "next"]
     for response in hero.responses :
         path_head = "responses/" + hero.name + "/"
         if (type(response.text_simple) is not type(None)) :
