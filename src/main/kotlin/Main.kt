@@ -4,6 +4,7 @@ import bot.Logger
 import modules.PseudoAdminModule
 import modules.RoleManagerModule
 import modules.WelcomeModule
+import modules.WiggleModule
 import modules.amongUs.AmongUsModule
 import modules.dota.ResponseModule
 import modules.moduleManager.ModuleManagerModule
@@ -21,6 +22,7 @@ fun main() {
 		bot.addModule(AmongUsModule(IDS.getID("AMONG_US_TEXT_CHANNEL")!!))
 		bot.addModule(VCModule(IDS.getID("VC_ROLE")!!, IDS.getID("VC_TEXT_CHANNEL")!!))
 		bot.addModule(PseudoAdminModule())
+		bot.addModule(WiggleModule())
 		bot.addModule(RoleManagerModule(IDS.getID("ROLE_TOGGLE_MESSAGE")!!, "resources/roles"))
 		bot.addModule(
 			WelcomeModule(FileReader("resources/welcome-message.txt").readText(),

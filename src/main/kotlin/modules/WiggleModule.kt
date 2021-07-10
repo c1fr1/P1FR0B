@@ -23,7 +23,9 @@ class WiggleModule : ListenerModule() {
 			Command("wiggle", "wiggle", this)
 		{m, e, b ->
 			var target = e.channel.getHistoryBefore(e.messageId, 1).complete().retrievedHistory[0]
-			target = e.channel.getHistoryAround(m.trim(), 1).complete().getMessageById(m.trim())?:target
+			if (m.trim().toLongOrNull() != null) {
+				target = e.channel.getHistoryAround(m.trim(), 1).complete().getMessageById(m.trim()) ?: target
+			}
 			target.addReaction(e.guild.getEmoteById(IDS.getID("WIGGLE")!!)!!).complete()
 			e.message.delete().complete()
 		}
@@ -32,6 +34,7 @@ class WiggleModule : ListenerModule() {
 	}
 
 	override fun onGuildMessageReactionAdd(event: GuildMessageReactionAddEvent) {
+		if (event.user.isBot) return
 		val m = event.channel.getHistoryAround(event.messageId, 1).complete()
 			.getMessageById(event.messageId) ?: return
 		for (reaction in m.reactions.filter {it.reactionEmote.id == IDS.getID("WIGGLE")!!}) {
