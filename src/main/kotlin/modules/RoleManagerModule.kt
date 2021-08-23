@@ -9,12 +9,13 @@ import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Role
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent
 import java.io.File
+import java.io.FileOutputStream
 import java.io.FileReader
 
 @ModuleID("Role Manager")
-class RoleManagerModule(private val reactionMessageID: String, private val roleNameFile : File) : ListenerModule() {
+class RoleManagerModule(private val reactionMessageID : String, private val reactionMessageChannel : String, private val roleNameFile : File) : ListenerModule() {
 
-	constructor(reactionMessageID: String, roleNameFile: String) : this(reactionMessageID, File(roleNameFile))
+	constructor(reactionMessageID: String, reactionMessageChannel : String, roleNameFile: String) : this(reactionMessageID, reactionMessageChannel, File(roleNameFile))
 
 	override val name: String
 		get() = "Role Manager"
@@ -37,11 +38,14 @@ class RoleManagerModule(private val reactionMessageID: String, private val roleN
 				}
 				if (!e.guild.emotes.any {it.name.equals(message.trim(), true)}) {
 					e.channel.sendMessage("there must be an emote for this role first").complete()
+					return@Command
 				}
-				val fos = roleNameFile.outputStream()
-				fos.write(message.trim().encodeToByteArray())
+				e.guild.getTextChannelById(reactionMessageChannel)!!.getHistoryAround(reactionMessageID, 1).complete().retrievedHistory[0]!!
+					.addReaction(e.guild.emotes.find { it.name.equals(message.trim(), true) }!!).complete()
+				val fos = FileOutputStream(roleNameFile, true)
+				fos.write("\n${message.trim()}".encodeToByteArray())
 				fos.close()
-				if (e.guild.roles.any {it.name.equals(message.trim())}) {
+				if (!e.guild.roles.any {it.name.equals(message.trim())}) {
 					e.guild.createRole().setName(message.trim()).setPermissions().complete()
 				}
 				e.channel.sendMessage("Role added!").complete()

@@ -12,6 +12,7 @@ import modules.voiceChannel.VCModule
 import java.io.FileReader
 import kotlin.io.path.ExperimentalPathApi
 import kotlin.system.exitProcess
+import kotlin.random.Random
 
 @ExperimentalPathApi
 fun main() {
@@ -23,7 +24,7 @@ fun main() {
 		bot.addModule(VCModule(IDS.getID("VC_ROLE")!!, IDS.getID("VC_TEXT_CHANNEL")!!))
 		bot.addModule(PseudoAdminModule())
 		bot.addModule(WiggleModule())
-		bot.addModule(RoleManagerModule(IDS.getID("ROLE_TOGGLE_MESSAGE")!!, "resources/roles"))
+		bot.addModule(RoleManagerModule(IDS.getID("ROLE_TOGGLE_MESSAGE")!!, IDS.getID("ROLE_TOGGLE_CHANNEL")!!, "resources/roles"))
 		bot.addModule(
 			WelcomeModule(FileReader("resources/welcome-message.txt").readText(),
 				IDS.getID("MEMBER_ROLE")!!))
