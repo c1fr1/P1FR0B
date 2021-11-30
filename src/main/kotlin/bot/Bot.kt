@@ -14,6 +14,7 @@ import kotlin.reflect.KFunction
  * primary class to represent the Discord bot
  * @author Varas#5480
  */
+@Suppress("UNCHECKED_CAST")
 class Bot(targetGuildSnowflake : String) {
 
 	private var jdaBuilder : JDABuilder? = JDABuilder.createDefault(IDS.getID("API_KEY"))
@@ -35,8 +36,8 @@ class Bot(targetGuildSnowflake : String) {
 		jdaObj = jdaBuilder!!.build().awaitReady()
 		jdaBuilder = null
 
-		for (module in modules.clone() as List<IModule>) {
-			module.onStartup(this)
+		for (module in modules.clone() as List<*>) {
+			(module as IModule).onStartup(this)
 		}
 
 		Logger.info("bot is now running!")

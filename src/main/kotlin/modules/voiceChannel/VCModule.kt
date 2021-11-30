@@ -34,6 +34,9 @@ class VCModule(private val roleId : String, private val vcChannelID : String) : 
 			}
 			messages = tc.history.retrievePast(50).complete()
 		}
+		for (threadChannel in tc.threadChannels) {
+			threadChannel.delete().complete()
+		}
 	}
 
 	private fun role(e : GenericGuildEvent) : Role = e.guild.getRoleById(roleId)!!

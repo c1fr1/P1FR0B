@@ -1,5 +1,6 @@
 package bot.modules
 
+import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 
@@ -8,9 +9,9 @@ annotation class ModuleID(val name : String) {
 	companion object {
 
 		fun getID(name : String) : String = name
-				.replace("'", "")
-				.replace(Regex("([^a-zA-Z])"), "-")
-				.toLowerCase()
+			.replace("'", "")
+			.replace(Regex("([^a-zA-Z])"), "-")
+			.lowercase(Locale.getDefault())
 
 		fun getID(mAnn : ModuleID) : String = getID(mAnn.name)
 

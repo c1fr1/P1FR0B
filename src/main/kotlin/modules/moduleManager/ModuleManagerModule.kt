@@ -71,7 +71,7 @@ class ModuleManagerModule : BotModule() {
 				"starts running the specified module on this bot\n\n" +
 				"`${commandModule.prefix}start module <module id> <constructor parameters>`",
 				this, true)
-			{params, event, target ->
+			{params, event, _ ->
 				var moduleClass : KClass<out IModule>? = null
 				val aParams = params.trim().split(' ')
 				val mID = ModuleID.getID(aParams[0])

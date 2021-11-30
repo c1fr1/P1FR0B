@@ -5,7 +5,7 @@ import bot.commands.Command
 import bot.commands.GeneralCommandModule
 import bot.modules.ListenerModule
 import bot.modules.ModuleID
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent
 
 @ModuleID("Wiggle")
 class WiggleModule : ListenerModule() {
@@ -21,7 +21,7 @@ class WiggleModule : ListenerModule() {
 		val commandModule = bot.resolveDependency(GeneralCommandModule::class) ?: return false
 		commandModule.addCommands(
 			Command("wiggle", "wiggle", this)
-		{m, e, b ->
+		{m, e, _ ->
 			var target = e.channel.getHistoryBefore(e.messageId, 1).complete().retrievedHistory[0]
 			if (m.trim().toLongOrNull() != null) {
 				target = e.channel.getHistoryAround(m.trim(), 1).complete().getMessageById(m.trim()) ?: target
@@ -33,8 +33,8 @@ class WiggleModule : ListenerModule() {
 		return super.onStartup(bot)
 	}
 
-	override fun onGuildMessageReactionAdd(event: GuildMessageReactionAddEvent) {
-		if (event.user.isBot) return
+	override fun onMessageReactionAdd(event: MessageReactionAddEvent) {
+		if (event.user!!.isBot) return
 		val m = event.channel.getHistoryAround(event.messageId, 1).complete()
 			.getMessageById(event.messageId) ?: return
 		for (reaction in m.reactions.filter {it.reactionEmote.id == IDS.getID("WIGGLE")!!}) {

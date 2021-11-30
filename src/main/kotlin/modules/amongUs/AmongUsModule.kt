@@ -7,7 +7,8 @@ import bot.modules.ListenerModule
 import bot.modules.ModuleID
 import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.VoiceChannel
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
+import java.util.*
 
 @ModuleID("Among Us Room Manager")
 class AmongUsModule(val tcTarget : String) : ListenerModule() {
@@ -36,7 +37,7 @@ class AmongUsModule(val tcTarget : String) : ListenerModule() {
 					?.setTopic("set room code with \"${commandModule.prefix}room XXXXXX\"")?.complete()
 				return@Command
 			}
-			if (m.trim().length == 6 && m.trim().toUpperCase().all {it.isLetter()}) {
+			if (m.trim().length == 6 && m.trim().uppercase(Locale.getDefault()).all {it.isLetter()}) {
 				setCode(m, e.member!!)
 			} else {
 				e.channel.sendMessage("invalid code").complete()
@@ -45,7 +46,7 @@ class AmongUsModule(val tcTarget : String) : ListenerModule() {
 		return super.onStartup(bot)
 	}
 
-	override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
+	override fun onMessageReceived(event: MessageReceivedEvent) {
 		if (event.channel.id == tcTarget) {
 			if (event.message.contentRaw.length == 6 &&
 					event.message.contentRaw.all {it.isLetter()}) {
@@ -59,12 +60,12 @@ class AmongUsModule(val tcTarget : String) : ListenerModule() {
 			vcTarget = findVC(m) ?: return
 		}
 		val tc = m.guild.getTextChannelById(tcTarget) ?: return
-		roomCode = code.trim().toUpperCase()
+		roomCode = code.trim().uppercase(Locale.getDefault())
 		if (oldVCName == null) {
 			oldVCName = vcTarget!!.name
 		}
-		vcTarget!!.manager.setName("Among Us in: ${code.trim().toUpperCase()}").complete()
-		tc.manager.setTopic("room ID: ${code.trim().toUpperCase()}").complete()
+		vcTarget!!.manager.setName("Among Us in: ${code.trim().uppercase(Locale.getDefault())}").complete()
+		tc.manager.setTopic("room ID: ${code.trim().uppercase(Locale.getDefault())}").complete()
 	}
 
 	private fun findVC(m : Member) : VoiceChannel? {

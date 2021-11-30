@@ -2,10 +2,12 @@ package modules.dota
 
 import bot.modules.ListenerModule
 import bot.modules.ModuleID
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.extension
 
@@ -15,7 +17,7 @@ class ResponseModule(private val basePath : String = "resources/responses/") : L
 
 	override val name: String = "Dota Responses"
 
-	override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
+	override fun onMessageReceived(event: MessageReceivedEvent) {
 		if (event.author.isBot) return
 		val path = getRandomPath(event.message.contentRaw)
 		if (path != null) {
@@ -24,7 +26,7 @@ class ResponseModule(private val basePath : String = "resources/responses/") : L
 	}
 
 	private fun getRandomPath(message : String) : File?
-		= getRandomPath(message.toLowerCase().replace(Regex("([^a-z ])"), "").split(" "))
+		= getRandomPath(message.lowercase(Locale.getDefault()).replace(Regex("([^a-z ])"), "").split(" "))
 
 	private fun getRandomPath(words : List<String>) : File? {
 		var strPath = basePath

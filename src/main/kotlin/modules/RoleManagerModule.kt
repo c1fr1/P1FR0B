@@ -7,7 +7,7 @@ import bot.modules.ListenerModule
 import bot.modules.ModuleID
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Role
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent
 import java.io.File
 import java.io.FileOutputStream
 import java.io.FileReader
@@ -54,15 +54,15 @@ class RoleManagerModule(private val reactionMessageID : String, private val reac
 		return super.onStartup(bot)
 	}
 
-	override fun onGuildMessageReactionAdd(event: GuildMessageReactionAddEvent) {
-		if (event.user.isBot) return
+	override fun onMessageReactionAdd(event: MessageReactionAddEvent) {
+		if (event.user!!.isBot) return
 		if (event.messageId == reactionMessageID && isManageable(event.reactionEmote.name)) {
-			event.reaction.removeReaction(event.user).complete()
+			event.reaction.removeReaction(event.user!!).complete()
 			val role = getRole(event.guild, event.reactionEmote.name) ?: return
-			if (event.member.roles.any {it.name == role.name}) {
-				event.guild.removeRoleFromMember(event.member, role).complete()
+			if (event.member!!.roles.any {it.name == role.name}) {
+				event.guild.removeRoleFromMember(event.member!!, role).complete()
 			} else {
-				event.guild.addRoleToMember(event.member, role).complete()
+				event.guild.addRoleToMember(event.member!!, role).complete()
 			}
 		}
 	}

@@ -6,6 +6,7 @@ import bot.commands.GeneralCommandModule
 import bot.modules.BotModule
 import bot.modules.ModuleID
 import net.dv8tion.jda.api.Region
+import java.util.*
 
 @ModuleID("Pseudo Admin")
 class PseudoAdminModule : BotModule() {
@@ -25,6 +26,8 @@ class PseudoAdminModule : BotModule() {
 			"toggles or changes the current region",
 			this)
 		{m, e, _ ->
+			val targetVC =
+				e.guild.voiceChannels.find { vc -> vc.members.any { member -> member.idLong == e.member?.idLong }}
 			if (System.nanoTime() - cooldown <= lastCallTime) {
 				val remainingTime = (System.nanoTime() - lastCallTime) / 1e9
 				e.channel
@@ -32,15 +35,19 @@ class PseudoAdminModule : BotModule() {
 					.complete()
 				return@Command
 			}
-			var newRegion = Region.fromKey(m.trim().toLowerCase())
+			if (targetVC == null) {
+				e.channel.sendMessage("you must join a voice channel first")
+				return@Command
+			}
+			var newRegion = Region.fromKey(m.trim().lowercase(Locale.getDefault()))
 			if (newRegion == Region.UNKNOWN) {
-				newRegion = if (e.guild.region == primaryServer) {
+				newRegion = if (targetVC.region == primaryServer) {
 					secondaryServer
 				} else {
 					primaryServer
 				}
 			}
-			e.guild.manager.setRegion(newRegion).complete()
+			targetVC.manager.setRegion(newRegion).complete()
 			e.channel
 				.sendMessage("voice channel region changed to ${newRegion.name} <@!${e.member!!.id}>").complete()
 			lastCallTime = System.nanoTime()

@@ -12,7 +12,6 @@ import modules.voiceChannel.VCModule
 import java.io.FileReader
 import kotlin.io.path.ExperimentalPathApi
 import kotlin.system.exitProcess
-import kotlin.random.Random
 
 @ExperimentalPathApi
 fun main() {

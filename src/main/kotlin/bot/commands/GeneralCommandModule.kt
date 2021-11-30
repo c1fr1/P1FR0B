@@ -5,7 +5,7 @@ import bot.modules.ListenerModule
 import bot.Logger
 import bot.modules.ModuleID
 import net.dv8tion.jda.api.Permission
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import java.util.*
 
 @ModuleID("General Commands")
@@ -48,7 +48,7 @@ class GeneralCommandModule(val prefix : String) : ListenerModule() {
 		return super.load()
 	}
 
-	override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
+	override fun onMessageReceived(event: MessageReceivedEvent) {
 		if (event.author.isBot) return
 		for (command in commands.filter {!it.requiresAdmin || event.member!!.hasPermission(Permission.ADMINISTRATOR)}) {
 			val commandPrefix = "$prefix${command.functionName}"

@@ -18,9 +18,12 @@ plugins {
 
 repositories {
 	mavenCentral()
-	maven {
+	/*maven {
 		name = "m2-dv8tion"
 		url = uri("https://m2.dv8tion.net/releases")
+	}*/
+	maven {
+		url = uri("https://jitpack.io")
 	}
 }
 
@@ -32,7 +35,8 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.30")
 	implementation("org.reflections:reflections:0.9.11")
 	implementation("org.slf4j:slf4j-nop:1.7.32")
-	implementation("net.dv8tion:JDA:4.4.0_350")
+	//implementation("net.dv8tion:JDA:4.4.0_350")
+	implementation("com.github.DV8FromTheWorld:JDA:v5-SNAPSHOT")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0")
 }
 
