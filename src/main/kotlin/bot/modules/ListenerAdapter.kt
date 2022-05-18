@@ -2,10 +2,6 @@ package bot.modules
 
 import bot.Logger
 import net.dv8tion.jda.api.events.*
-import net.dv8tion.jda.api.events.application.ApplicationCommandCreateEvent
-import net.dv8tion.jda.api.events.application.ApplicationCommandDeleteEvent
-import net.dv8tion.jda.api.events.application.ApplicationCommandUpdateEvent
-import net.dv8tion.jda.api.events.application.GenericApplicationCommandEvent
 import net.dv8tion.jda.api.events.channel.ChannelCreateEvent
 import net.dv8tion.jda.api.events.channel.ChannelDeleteEvent
 import net.dv8tion.jda.api.events.channel.GenericChannelEvent
@@ -62,7 +58,6 @@ import java.lang.invoke.MethodType
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
-import javax.annotation.Nonnull
 
 
 interface ListenerAdapter : EventListener {
@@ -79,16 +74,6 @@ interface ListenerAdapter : EventListener {
 	fun onShutdown(event: ShutdownEvent) {}
 	fun onStatusChange(event: StatusChangeEvent) {}
 	fun onException(event: ExceptionEvent) {}
-
-	//Interaction Events
-	fun onSlashCommand(event: SlashCommandEvent) {}
-	fun onButtonClick(event: ButtonClickEvent) {}
-	fun onSelectionMenu(event: SelectionMenuEvent) {}
-
-	//Application Events
-	fun onApplicationCommandUpdate(event: ApplicationCommandUpdateEvent) {}
-	fun onApplicationCommandDelete(event: ApplicationCommandDeleteEvent) {}
-	fun onApplicationCommandCreate(event: ApplicationCommandCreateEvent) {}
 
 	//User Events
 	fun onUserUpdateName(event: UserUpdateNameEvent) {}
@@ -254,9 +239,7 @@ interface ListenerAdapter : EventListener {
 	fun onHttpRequest(event: HttpRequestEvent) {}
 
 	//Generic Events
-	fun onGenericApplicationCommand(event: GenericApplicationCommandEvent) {}
 	fun onGenericInteractionCreate(event: GenericInteractionCreateEvent) {}
-	fun onGenericComponentInteractionCreate(event: GenericComponentInteractionCreateEvent) {}
 	fun onGenericMessage(event: GenericMessageEvent) {}
 	fun onGenericMessageReaction(event: GenericMessageReactionEvent) {}
 	fun onGenericUser(event: GenericUserEvent) {}

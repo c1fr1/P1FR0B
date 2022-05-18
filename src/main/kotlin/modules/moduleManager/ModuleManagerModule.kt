@@ -6,7 +6,6 @@ import bot.commands.GeneralCommandModule
 import bot.modules.BotModule
 import bot.modules.IModule
 import bot.modules.ModuleID
-import modules.*
 import net.dv8tion.jda.api.entities.User
 import org.reflections.Reflections
 import kotlin.reflect.KClass
@@ -140,7 +139,7 @@ class ModuleManagerModule : BotModule() {
 	}
 
 	private fun <T : IModule> constructModule(module : KClass<out T>, params : List<String>) : T? {
-		for (constructor in module.constructors.filter {it.parameters.all {it.type.classifier == String::class}}) {
+		for (constructor in module.constructors.filter {c -> c.parameters.all {it.type.classifier == String::class}}) {
 			if (constructor.parameters.size == params.size) {
 				return constructor.call(*params.toTypedArray())
 			}

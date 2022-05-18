@@ -45,7 +45,7 @@ class RoleManagerModule(private val reactionMessageID : String, private val reac
 				val fos = FileOutputStream(roleNameFile, true)
 				fos.write("\n${message.trim()}".encodeToByteArray())
 				fos.close()
-				if (!e.guild.roles.any {it.name.equals(message.trim())}) {
+				if (!e.guild.roles.any { it.name == message.trim() }) {
 					e.guild.createRole().setName(message.trim()).setPermissions().complete()
 				}
 				e.channel.sendMessage("Role added!").complete()

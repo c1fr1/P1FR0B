@@ -72,17 +72,17 @@ class Bot(targetGuildSnowflake : String) {
 			Logger.logError(e)
 		}
 		if (isRunning()) {
-			if (module.onStartup(this)) {
+			return if (module.onStartup(this)) {
 				for (m in modules) {
 					m.onAddModule(module)
 					module.onAddModule(m)
 				}
 				Logger.verbose("added module ${module.id}")
-				return true
+				true
 			} else {
 				Logger.warn("failed to load module ${module.id}")
 				modules.remove(module)
-				return false
+				false
 			}
 		}
 		Logger.verbose("added module ${module.id}")
