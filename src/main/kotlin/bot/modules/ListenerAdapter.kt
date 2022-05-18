@@ -26,6 +26,12 @@ import net.dv8tion.jda.api.events.guild.update.*
 import net.dv8tion.jda.api.events.guild.voice.*
 import net.dv8tion.jda.api.events.http.HttpRequestEvent
 import net.dv8tion.jda.api.events.interaction.*
+import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent
+import net.dv8tion.jda.api.events.interaction.command.MessageContextInteractionEvent
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
+import net.dv8tion.jda.api.events.interaction.command.UserContextInteractionEvent
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
+import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent
 import net.dv8tion.jda.api.events.message.*
 import net.dv8tion.jda.api.events.message.react.*
 import net.dv8tion.jda.api.events.role.GenericRoleEvent
@@ -74,6 +80,15 @@ interface ListenerAdapter : EventListener {
 	fun onShutdown(event: ShutdownEvent) {}
 	fun onStatusChange(event: StatusChangeEvent) {}
 	fun onException(event: ExceptionEvent) {}
+
+	//Interaction Events
+	fun onSlashCommandInteraction(event : SlashCommandInteractionEvent) {}
+	fun onUserContextInteraction(event : UserContextInteractionEvent) {}
+	fun onMessageContextInteraction(event : MessageContextInteractionEvent) {}
+	fun onButtonInteraction(event : ButtonInteractionEvent) {}
+	fun onSelectMenuInteraction(event : SelectMenuInteractionEvent) {}
+	fun onCommandAutoCompleteInteraction(event : CommandAutoCompleteInteractionEvent) {}
+	fun onModalInteraction(event : ModalInteractionEvent) {}
 
 	//User Events
 	fun onUserUpdateName(event: UserUpdateNameEvent) {}
