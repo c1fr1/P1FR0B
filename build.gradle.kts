@@ -28,7 +28,7 @@ dependencies {
 	implementation("org.jetbrains.kotlin", "kotlin-reflect", "1.6.21")
 	implementation("org.reflections", "reflections", "0.9.11")
 	implementation("org.slf4j", "slf4j-nop", "1.7.36")
-	implementation("net.dv8tion", "JDA", "5.0.0-alpha.11")
+	implementation("net.dv8tion", "JDA", "5.0.0-alpha.12")
 }
 
 tasks.withType<KotlinCompile> {

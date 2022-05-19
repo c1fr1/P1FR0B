@@ -2,12 +2,14 @@ package modules
 
 import bot.*
 import bot.commands.Command
+import bot.commands.CommandParameter
 import bot.commands.GeneralCommandModule
 import bot.modules.ListenerModule
 import bot.modules.ModuleID
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Role
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent
+import net.dv8tion.jda.api.interactions.commands.OptionType
 import java.io.File
 import java.io.FileOutputStream
 import java.io.FileReader
@@ -27,28 +29,32 @@ class RoleManagerModule(private val reactionMessageID : String, private val reac
 	override fun onStartup(bot: Bot): Boolean {
 		val commandModule = bot.resolveDependency(GeneralCommandModule::class) ?: return false
 		commandModule.addCommands(
-			Command("addRole",
+			Command("add-role",
+				"adds a manageable role",
 			"adds a role to the list of manageable roles\n\n" +
-					"`${commandModule.prefix}addRole <new role>`",
-			this, true)
-			{message, e, _ ->
-				if (isManageable(message.trim())) {
-					e.channel.sendMessage("role is already being managed").complete()
+					"`/add-role <new role>`",
+			this, true,
+			CommandParameter(OptionType.STRING, "name", "name of the new role", true)
+			)
+			{e, _ ->
+				val roleName = e.getOption("name")!!.asString
+				if (isManageable(roleName)) {
+					e.reply("role is already being managed").complete()
 					return@Command
 				}
-				if (!e.guild.emotes.any {it.name.equals(message.trim(), true)}) {
-					e.channel.sendMessage("there must be an emote for this role first").complete()
+				if (!bot.getGuild().emotes.any {it.name.equals(roleName, true)}) {
+					e.reply("there must be an emote for this role first").complete()
 					return@Command
 				}
-				e.guild.getTextChannelById(reactionMessageChannel)!!.getHistoryAround(reactionMessageID, 1).complete().retrievedHistory[0]!!
-					.addReaction(e.guild.emotes.find { it.name.equals(message.trim(), true) }!!).complete()
+				bot.getGuild().getTextChannelById(reactionMessageChannel)!!.getHistoryAround(reactionMessageID, 1).complete().retrievedHistory[0]!!
+					.addReaction(bot.getGuild().emotes.find { it.name.equals(roleName, true) }!!).complete()
 				val fos = FileOutputStream(roleNameFile, true)
-				fos.write("\n${message.trim()}".encodeToByteArray())
+				fos.write("\n$roleName".encodeToByteArray())
 				fos.close()
-				if (!e.guild.roles.any { it.name == message.trim() }) {
-					e.guild.createRole().setName(message.trim()).setPermissions().complete()
+				if (!bot.getGuild().roles.any { it.name == roleName }) {
+					bot.getGuild().createRole().setName(roleName).setPermissions().complete()
 				}
-				e.channel.sendMessage("Role added!").complete()
+				e.reply("Role added!").complete()
 			}
 		)
 		return super.onStartup(bot)

@@ -2,11 +2,13 @@ package modules.moduleManager
 
 import bot.*
 import bot.commands.Command
+import bot.commands.CommandParameter
 import bot.commands.GeneralCommandModule
 import bot.modules.BotModule
 import bot.modules.IModule
 import bot.modules.ModuleID
 import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.interactions.commands.OptionType
 import org.reflections.Reflections
 import kotlin.reflect.KClass
 import kotlin.text.StringBuilder
@@ -40,21 +42,23 @@ class ModuleManagerModule : BotModule() {
 			return false
 		}
 		commandModule.addCommands(
-			Command("list active modules",
+			Command("list-active-modules",
+				"lists the modules this bot uses",
 				"shows a all of the modules that are currently serving this bot",
 				this)
-			{ _, event, _ ->
+			{event, _ ->
 				val moduleStatus = StringBuilder()
 				moduleStatus.append("**currently running modules**\n\n")
 				for (module in getBot(event).getModules()) {
 					moduleStatus.append(" - ${module.name} (`${module.id}`)\n")
 				}
-				event.channel.sendMessage(moduleStatus.toString()).complete()
+				event.reply(moduleStatus.toString()).complete()
 			},
-			Command("list available modules",
+			Command("list-available-modules",
+				"lists all modules including those that can be added",
 				"lists all of the functions that are either running or can be started at runtime",
 				this)
-			{_, event, _ ->
+			{event, _ ->
 				val stringBuilder = StringBuilder("**available modules**\n")
 				for (module in getAvailableModules()) {
 					val mID = ModuleID.getID(module.kotlin)
@@ -64,16 +68,19 @@ class ModuleManagerModule : BotModule() {
 						stringBuilder.append(" - `$mID` available\n")
 					}
 				}
-				event.channel.sendMessage(stringBuilder).complete()
+				event.reply(stringBuilder.toString()).complete()
 			},
-			Command("start module",
+			Command("start-module",
+				"adds an available modue to the bot",
 				"starts running the specified module on this bot\n\n" +
-				"`${commandModule.prefix}start module <module id> <constructor parameters>`",
-				this, true)
-			{params, event, _ ->
+				"`/start-module <module id> <constructor parameters>`",
+				this, true,
+				CommandParameter(OptionType.STRING, "module", "identifier of the module", true),
+				CommandParameter(OptionType.STRING, "parameters", "parameters for the constructor of the module")
+			)
+			{event, _ ->
 				var moduleClass : KClass<out IModule>? = null
-				val aParams = params.trim().split(' ')
-				val mID = ModuleID.getID(aParams[0])
+				val mID = event.getOption("module")?.asString
 				for (m in getAvailableModules()) {
 					if (ModuleID.getID(m.kotlin) == mID) {
 						moduleClass = m.kotlin
@@ -81,35 +88,38 @@ class ModuleManagerModule : BotModule() {
 				}
 
 				if (moduleClass == null) {
-					event.channel.sendMessage("unable to find module `$mID`, try `${commandModule.prefix}list" +
-							" available modules`").complete()
+					event.reply("unable to find module `$mID`, try `/list available modules`").complete()
 					return@Command
 				}
 
-				val ret = constructModule(moduleClass, aParams.drop(1))
+				val params = (event.getOption("parameters")?.asString ?: "").split(" ").filter { it.length > 0 }
+				val ret = constructModule(moduleClass, params)
 				if (ret == null) {
-					event.channel.sendMessage("failed to create `$mID` module, try" +
-							" `${commandModule.prefix}module constructors `$mID`").complete()
+					event.reply("failed to create `$mID` module").complete()
 					return@Command
 				}
 				if (bot.addModule(ret)) {
-					event.channel.sendMessage("module added!").complete()
+					event.reply("module added!").complete()
 				} else {
-					event.channel.sendMessage("failed to start $mID").complete()
+					event.reply("failed to start $mID").complete()
 				}
 			},
-			Command("stop module",
+			Command("stop-module",
+				"removes a module from this bot",
 				"removes the specified module from this bot\n\n" +
-				"`${commandModule.prefix}stop module <module id>`\n" +
-				"`${commandModule.prefix}stop module <module name>`",
-				this, true)
-			{param, event, cBot ->
-				for (module in cBot.getModules().filter {it.id == ModuleID.getID(param)}) {
+				"`/stop-module <module id>`\n" +
+				"`/stop-module <module name>`",
+				this, true,
+				CommandParameter(OptionType.STRING, "module", "identifier of the module", true)
+			)
+			{event, cBot ->
+				val mID = event.getOption("module")?.asString ?: ""
+				for (module in cBot.getModules().filter {it.id == ModuleID.getID(mID)}) {
 					cBot.removeModule(module)
-					event.channel.sendMessage("removed module `${module.id}`").complete()
+					event.reply("removed module `${module.id}`").complete()
 					return@Command
 				}
-				event.channel.sendMessage("there was not a `${ModuleID.getID(param)}` module running").complete()
+				event.reply("there was not a `${ModuleID.getID(mID)}` module running").complete()
 			}
 		)
 		sendManagerMessage("Module \"$name\" has been added\nid: $id")
@@ -142,9 +152,6 @@ class ModuleManagerModule : BotModule() {
 		for (constructor in module.constructors.filter {c -> c.parameters.all {it.type.classifier == String::class}}) {
 			if (constructor.parameters.size == params.size) {
 				return constructor.call(*params.toTypedArray())
-			}
-			if (constructor.parameters.size < params.size) {
-				continue
 			}
 		}
 		return null

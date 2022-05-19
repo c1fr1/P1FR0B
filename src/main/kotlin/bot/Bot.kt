@@ -5,6 +5,7 @@ import bot.modules.ListenerAdapter
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Guild
+import net.dv8tion.jda.api.interactions.commands.build.CommandData
 import net.dv8tion.jda.api.requests.GatewayIntent
 import java.util.*
 import kotlin.reflect.KClass
@@ -122,6 +123,15 @@ class Bot(targetGuildSnowflake : String) {
 		}
 
 		return null
+	}
+
+	/**
+	 * ensures that there is a specific module serving this bot
+	 * @return the module that is either on the bot or was just added to the bot, null if the module doesn't have a
+	 * constructor or the module fails to start
+	 */
+	inline fun <reified T : IModule> resolveDependency() : T? {
+		return resolveDependency(T::class)
 	}
 
 	/**
