@@ -1,11 +1,11 @@
 package bot
 
+import bot.commands.GeneralCommandModule
 import bot.modules.IModule
 import bot.modules.ListenerAdapter
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Guild
-import net.dv8tion.jda.api.interactions.commands.build.CommandData
 import net.dv8tion.jda.api.requests.GatewayIntent
 import java.util.*
 import kotlin.reflect.KClass
@@ -26,6 +26,12 @@ class Bot(targetGuildSnowflake : String) {
 	private val modules : LinkedList<IModule> = LinkedList()
 
 	private val guild = targetGuildSnowflake
+
+	val jda : JDA get() { return jdaObj!! }
+
+	init {
+		addModule(GeneralCommandModule())
+	}
 
 	/**
 	 * starts the bot, taking it online
@@ -198,7 +204,7 @@ class Bot(targetGuildSnowflake : String) {
 	 * gets the main guild that the bot is in
 	 * @return primary guild the bot serves
 	 */
-	fun getGuild(): Guild {
+	fun getGuild() : Guild {
 		if (!isRunning()) {
 			throw Exception("Tried to get guild while the guild wasn't running")
 		}

@@ -1,9 +1,7 @@
 package modules
 
 import bot.*
-import bot.commands.Command
-import bot.commands.CommandParameter
-import bot.commands.GeneralCommandModule
+import bot.commands.*
 import bot.modules.ListenerModule
 import bot.modules.ModuleID
 import net.dv8tion.jda.api.entities.Guild
@@ -26,38 +24,27 @@ class RoleManagerModule(private val reactionMessageID : String, private val reac
 		return roleNameFile.isFile && super.load()
 	}
 
-	override fun onStartup(bot: Bot): Boolean {
-		val commandModule = bot.resolveDependency(GeneralCommandModule::class) ?: return false
-		commandModule.addCommands(
-			Command("add-role",
-				"adds a manageable role",
-			"adds a role to the list of manageable roles\n\n" +
-					"`/add-role <new role>`",
-			this, true,
-			CommandParameter(OptionType.STRING, "name", "name of the new role", true)
-			)
-			{e, _ ->
-				val roleName = e.getOption("name")!!.asString
-				if (isManageable(roleName)) {
-					e.reply("role is already being managed").complete()
-					return@Command
-				}
-				if (!bot.getGuild().emotes.any {it.name.equals(roleName, true)}) {
-					e.reply("there must be an emote for this role first").complete()
-					return@Command
-				}
-				bot.getGuild().getTextChannelById(reactionMessageChannel)!!.getHistoryAround(reactionMessageID, 1).complete().retrievedHistory[0]!!
-					.addReaction(bot.getGuild().emotes.find { it.name.equals(roleName, true) }!!).complete()
-				val fos = FileOutputStream(roleNameFile, true)
-				fos.write("\n$roleName".encodeToByteArray())
-				fos.close()
-				if (!bot.getGuild().roles.any { it.name == roleName }) {
-					bot.getGuild().createRole().setName(roleName).setPermissions().complete()
-				}
-				e.reply("Role added!").complete()
-			}
-		)
-		return super.onStartup(bot)
+	@CommandFunction(
+		"adds a manageable role",
+		"adds a role to the list of manageable roles\n\n" +
+				"`/add-role <name>`",
+		true)
+	fun addRole(bot : Bot,  @CMDParam("name of the new role") name : String) : String {
+		if (isManageable(name)) {
+			return "role is already being managed"
+		}
+		if (!bot.getGuild().emotes.any {it.name.equals(name, true)}) {
+			return "there must be an emote for this role first"
+		}
+		bot.getGuild().getTextChannelById(reactionMessageChannel)!!.getHistoryAround(reactionMessageID, 1).complete().retrievedHistory[0]!!
+			.addReaction(bot.getGuild().emotes.find { it.name.equals(name, true) }!!).complete()
+		val fos = FileOutputStream(roleNameFile, true)
+		fos.write("\n$name".encodeToByteArray())
+		fos.close()
+		if (!bot.getGuild().roles.any { it.name == name }) {
+			bot.getGuild().createRole().setName(name).setPermissions().complete()
+		}
+		return "Role added!"
 	}
 
 	override fun onMessageReactionAdd(event: MessageReactionAddEvent) {
