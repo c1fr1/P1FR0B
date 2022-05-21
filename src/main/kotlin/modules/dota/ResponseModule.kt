@@ -95,6 +95,24 @@ class ResponseModule(private val basePath : String = "resources/responses/",
 			reply.editOriginal(ret).complete()
 		}
 	}
+
+	@SlashCommand("Sends a specified voice line",
+		"Sends a voice line based on an exact hero name and voice line ID. You can find the id by using" +
+				"`/find-response`, or by using the hero name and id listed by a previously sent voice line.")
+	fun sendResponse(e : SlashCommandInteractionEvent,
+		@CMDParam("name of the hero") hero : String,
+		@CMDParam("id of the voice line") id : Int
+	) {
+		val voiceLine = dictionary.filter { it.id == id &&
+				it.heroName.replace("_", "") == toSimpleText(hero) }
+		if (voiceLine.isEmpty()) {
+			e.reply("no voice line found").complete()
+		} else if (voiceLine.size > 1) {
+			e.reply("multiple voice lines found").complete()
+		} else {
+			e.replyFile(File(voiceLine.first().path(basePath))).complete()
+		}
+	}
 }
 
 private fun toSimpleText(str : String) : String {
