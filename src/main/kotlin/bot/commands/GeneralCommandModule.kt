@@ -101,10 +101,10 @@ class GeneralCommandModule : ListenerModule() {
 	}
 
 	@SlashCommand("upserts specified commands",
-		"uploads the function signatures of the specified commands to Discord's servers, this may result in " +
+		"Uploads the function signatures of the specified commands to Discord's servers, this may result in " +
 				"the commands being unusable for a significant period of time.\n" +
-				"when no commands are specified, all commands will be upserted.\n" +
-				"commands that already have a correct signature will not be upserted, this can be ovewritten using " +
+				"When no commands are specified, all commands will be upserted.\n" +
+				"Commands that already have a correct signature will not be upserted, this can be ovewritten using " +
 				"`force-upsert`\n\n" +
 				"`/upsert <command names>`", true)
 	fun upsert(bot : Bot,
@@ -142,9 +142,9 @@ class GeneralCommandModule : ListenerModule() {
 	}
 
 	@SlashCommand("upserts specified commands",
-		"uploads the function signatures of the specified commands to Discord's servers, this may result in " +
+		"Uploads the function signatures of the specified commands to Discord's servers, this may result in " +
 				"the commands being unusable for a significant period of time.\n" +
-				"when no commands are specified, all commands will be upserted.\n\n" +
+				"When no commands are specified, all commands will be upserted.\n\n" +
 				"`/force-upsert <command names>`", true)
 	fun forceUpsert(@CMDParam("space seperated list of command names") commands : String = "") : String {
 		val commandList = commands.split(" ").filter { it.isNotEmpty() }

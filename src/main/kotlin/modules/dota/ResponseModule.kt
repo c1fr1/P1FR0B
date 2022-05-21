@@ -38,7 +38,7 @@ class ResponseModule(private val basePath : String = "resources/responses/",
 	}
 
 	@SlashCommand("searches for a response",
-		"finds a response based on the information specified. None of the following parameters need to be" +
+		"Finds a response based on the information specified. None of the following parameters need to be" +
 				"specified, however only queries that return less than one thousand voice lines will be successful. " +
 				"For perspective, axe has over 750 voice lines.\n\n" +
 				"The phrase parameter specifies a phrase that will be contained in all of the voice lines returned. " +
