@@ -8,7 +8,6 @@ import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.VoiceChannel
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
-import net.dv8tion.jda.api.interactions.commands.OptionType
 import java.util.*
 
 @ModuleID("Among Us Room Manager")
@@ -20,7 +19,7 @@ class AmongUsModule(val tcTarget : String) : ListenerModule() {
 	var oldVCName : String? = null
 	var vcTarget : VoiceChannel? = null
 
-	@CommandFunction("Sets the among us room code",
+	@SlashCommand("Sets the among us room code",
 		"sets the among us room code that is displayed in a vc, and the topic of a text channel\n\n" +
 			"`/room <code>`\n" +
 			"`/room clear`")

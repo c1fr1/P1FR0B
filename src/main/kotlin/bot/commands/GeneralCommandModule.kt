@@ -37,7 +37,7 @@ class GeneralCommandModule : ListenerModule() {
 		jdas.add(bot.getGuild().jda)
 
 		for (module in bot.getModules()) {
-			for (cmd in module::class.functions.filter { it.hasAnnotation<CommandFunction>() }) {
+			for (cmd in module::class.functions.filter { it.hasAnnotation<SlashCommand>() }) {
 				addCommand(cmd, module)
 			}
 		}
@@ -65,7 +65,7 @@ class GeneralCommandModule : ListenerModule() {
 		}
 	}
 
-	@CommandFunction("retrieves information about a module or command",
+	@SlashCommand("retrieves information about a module or command",
 		"Sends information about a command or group of commands that are owned by a module, including"+
 			"the functions name, the module it is a part of, what it does and how to use it.\n" +
 			"\n" +
@@ -100,7 +100,7 @@ class GeneralCommandModule : ListenerModule() {
 		commands.addAll(command)
 	}
 
-	@CommandFunction("upserts specified commands",
+	@SlashCommand("upserts specified commands",
 		"uploads the function signatures of the specified commands to Discord's servers, this may result in " +
 				"the commands being unusable for a significant period of time.\n" +
 				"when no commands are specified, all commands will be upserted.\n" +
@@ -141,7 +141,7 @@ class GeneralCommandModule : ListenerModule() {
 		return ret.toString()
 	}
 
-	@CommandFunction("upserts specified commands",
+	@SlashCommand("upserts specified commands",
 		"uploads the function signatures of the specified commands to Discord's servers, this may result in " +
 				"the commands being unusable for a significant period of time.\n" +
 				"when no commands are specified, all commands will be upserted.\n\n" +
@@ -168,7 +168,7 @@ class GeneralCommandModule : ListenerModule() {
 		return ret.toString()
 	}
 
-	@CommandFunction("removes specified commands from this bots",
+	@SlashCommand("removes specified commands from this bots",
 		"removes the specified commands from discords list of functions for this bot\n\n" +
 				"`/unsert <command names>`", true)
 	fun unsert(bot : Bot,
@@ -214,7 +214,7 @@ class GeneralCommandModule : ListenerModule() {
 
 	fun addCommand(cmd : KFunction<*>, module : IModule) {
 
-		val annotation = cmd.findAnnotation<CommandFunction>()!!
+		val annotation = cmd.findAnnotation<SlashCommand>()!!
 		val cmdName = cmd.name.toAPIRegex()
 		val cmdFun = {e : SlashCommandInteractionEvent, bot : Bot ->
 			val params = cmd.parameters.associateWith {
@@ -278,7 +278,7 @@ class GeneralCommandModule : ListenerModule() {
 	}
 
 	override fun onAddModule(module : IModule) {
-		val cmds = module::class.functions.filter { it.hasAnnotation<CommandFunction>() }
+		val cmds = module::class.functions.filter { it.hasAnnotation<SlashCommand>() }
 		for (cmd in cmds) {
 			addCommand(cmd, module)
 		}

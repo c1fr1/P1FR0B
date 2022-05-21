@@ -17,7 +17,7 @@ class WiggleModule : ListenerModule() {
 		return super.load() && IDS.getID("WIGGLE") != null
 	}
 
-	@CommandFunction("wiggle", "wOggle")
+	@SlashCommand("wiggle", "wOggle")
 	fun wiggle(e : SlashCommandInteractionEvent, bot : Bot,
 	           @CMDParam("id of the message you wish to wiggle") messageId : Long = 0L) {
 		var target = e.channel.getHistoryAround(e.messageChannel.latestMessageId, 1).complete().retrievedHistory[0]

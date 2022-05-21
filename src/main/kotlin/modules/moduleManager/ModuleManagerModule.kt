@@ -38,7 +38,7 @@ class ModuleManagerModule : BotModule() {
 		return super.onStartup(bot)
 	}
 
-	@CommandFunction("lists the modules this bot uses",
+	@SlashCommand("lists the modules this bot uses",
 		"shows a list of all of the modules currently serving this bot")
 	fun listActiveModules(bot : Bot) : String {
 		val moduleStatus = StringBuilder()
@@ -49,7 +49,7 @@ class ModuleManagerModule : BotModule() {
 		return moduleStatus.toString()
 	}
 
-	@CommandFunction("lists all modules including those that can be added",
+	@SlashCommand("lists all modules including those that can be added",
 		"lists all of the functions that are either running or can be started at runtime")
 	fun listAvailableModules(bot : Bot) : String {
 		val stringBuilder = StringBuilder("**available modules**\n")
@@ -64,7 +64,7 @@ class ModuleManagerModule : BotModule() {
 		return stringBuilder.toString()
 	}
 
-	@CommandFunction("adds an available module to the bot",
+	@SlashCommand("adds an available module to the bot",
 		"starts running the specified module on this bot\n\n" +
 				"`/start-module <module id> <constructor parameters>`")
 	fun startModule(bot : Bot,
@@ -91,7 +91,7 @@ class ModuleManagerModule : BotModule() {
 		}
 	}
 
-	@CommandFunction("removes a module from this bot",
+	@SlashCommand("removes a module from this bot",
 		"removes the specified module from this bot\n\n" +
 				"`/stop-module <module id>`\n" +
 				"`/stop-module <module name>`")

@@ -38,27 +38,6 @@ class ResponseModule(private val basePath : String = "resources/responses/",
 		val asSimple = message.lowercase().replace(Regex("([^a-z ])"), "").trim()
 		return dictionary.filter { it.simpleText == asSimple }.randomOrNull()
 	}
-//		= getRandomPath(message.lowercase(Locale.getDefault()).replace(Regex("([^a-z ])"), "").split(" "))
-
-	/*private fun getRandomPath(words : List<String>) : File? {
-		var strPath = basePath
-		for (word in words) {
-			strPath += "$word/"
-			if (!Files.exists(Path.of(strPath))) {
-				return null
-			}
-		}
-		val heroList = ArrayList<Path>()
-		for (child in Files.list(Path.of(strPath))) {
-			if (child.extension == "mp3") {
-				heroList.add(child)
-			}
-		}
-		if (heroList.isEmpty()) {
-			return null
-		}
-		return heroList.random().toFile()
-	}*/
 }
 
 data class ResponseEntry(val simpleText : String, val heroName : String, val id : Int) {

@@ -7,7 +7,6 @@ import bot.modules.ModuleID
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Role
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent
-import net.dv8tion.jda.api.interactions.commands.OptionType
 import java.io.File
 import java.io.FileOutputStream
 import java.io.FileReader
@@ -24,7 +23,7 @@ class RoleManagerModule(private val reactionMessageID : String, private val reac
 		return roleNameFile.isFile && super.load()
 	}
 
-	@CommandFunction(
+	@SlashCommand(
 		"adds a manageable role",
 		"adds a role to the list of manageable roles\n\n" +
 				"`/add-role <name>`",

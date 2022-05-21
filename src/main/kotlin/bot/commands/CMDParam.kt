@@ -43,7 +43,7 @@ annotation class CMDParam(val description : String) {
 }
 
 @Target(AnnotationTarget.FUNCTION)
-annotation class CommandFunction(
+annotation class SlashCommand(
 	val shortDescription : String,
     val description : String,
 	val requiresAdmin : Boolean = false

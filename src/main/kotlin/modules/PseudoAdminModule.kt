@@ -1,12 +1,10 @@
 package modules
 
-import bot.*
 import bot.commands.*
 import bot.modules.BotModule
 import bot.modules.ModuleID
 import net.dv8tion.jda.api.Region
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
-import net.dv8tion.jda.api.interactions.commands.OptionType
 import java.util.*
 
 @ModuleID("Pseudo Admin")
@@ -21,7 +19,7 @@ class PseudoAdminModule : BotModule() {
 
 	private var lastCallTime = System.nanoTime() - cooldown
 
-	@CommandFunction("toggles or changes the current region",
+	@SlashCommand("toggles or changes the current region",
 		"toggles or changes the current region")
 	fun region(e : SlashCommandInteractionEvent,
 		@CMDParam("region you wish to change the vcs server to") region : String = "") : String {
