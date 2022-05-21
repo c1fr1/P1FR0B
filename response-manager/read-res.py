@@ -1,47 +1,33 @@
-from dotabase import *
-
 import shutil
-import os
+from dotabase import *
 
 def response_string(response) :
     simple_text = response.text_simple
+    if (simple_text is None) :
+        return ""
     words = simple_text.split(' ')
     return '-'.join(words).strip('-')
 
-def write_tree(response) :
-    path = "responses/"
-    for word in response.text_simple.split(' '):
-        if (len(word) == 0):
-            continue
-        path += word + "/"
-        if not os.path.isdir(path) :
-            os.mkdir(path)
-    shutil.copyfile(response.mp3.lstrip("/"), path + response.hero.name + ".mp3")
-
-#def write_tree(response) :
-#    write_tree(response.text_simple, response.hero.name, response.mp3)
-
 db = dotabase_session()
+
 if os.path.isdir("responses/") :
     shutil.rmtree("responses/")
 os.mkdir("responses/")
+
+file = open("response-data.txt", "w")
+
 for hero in db.query(Hero) :
-    print(hero.name)
-    #os.mkdir("responses/" + hero.name)
+    id = 0
+    os.mkdir("responses/" + hero.name + "/")
     disallowed = ["yes", "yup", "no", "oh", "hah", "uh", "gah", "why", "huh", "almost", "hm", "hmm", "hmmm", "ah", "ahh", "ahhh", "thanks", "thank-you", "hey", "ready", "ow", "nope", "sure", "yeah", "oof", "wait", "he", "eh", "yep", "wow", "what", "ooh", "ok", "alright", "next"]
     for response in hero.responses :
-        path_head = "responses/" + hero.name + "/"
-        if (type(response.text_simple) is not type(None)) :
-            rstring = response_string(response)
-            if not rstring in disallowed :
-                #try : 
-                    disallowed.append(rstring)
-                    write_tree(response)
-                    #shutil.copyfile(response.mp3.lstrip("/"), path_head + rstring + ".mp4")
-                #except : 
-                #    print(path_head + rstring + ".mp4")
-                #    print(response.mp3.lstrip("/"))
+        tex = response.text_simple
+        if (tex is None or tex in disallowed) :
+            continue
+        tex = tex.strip()
+        path = "responses/" + hero.name + "/" + str(id) + ".mp3"
+        file.write(hero.name + ", " + tex + ", " + str(id) + "\n")
+        shutil.copyfile(response.mp3.lstrip("/"), path)
+        id = id + 1
 
-
-#for voice in db.query(Voice) :
-#    print(voice.icon)
+file.close()
