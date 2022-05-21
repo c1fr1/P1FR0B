@@ -246,10 +246,10 @@ class GeneralCommandModule : ListenerModule() {
 			.filter { it.type != typeOf<SlashCommandInteractionEvent>() && it.type != typeOf<Bot>() }
 			.map {
 				val type = when {
-					it.type == typeOf<String>() -> OptionType.STRING
-					it.type == typeOf<Long>() -> OptionType.STRING
-					it.type == typeOf<Int>() -> OptionType.INTEGER
-					it.type == typeOf<Boolean>() -> OptionType.BOOLEAN
+					it.type == typeOf<String>() || it.type == typeOf<String?>() -> OptionType.STRING
+					it.type == typeOf<Long>() || it.type == typeOf<Long?>()-> OptionType.STRING
+					it.type == typeOf<Int>() || it.type == typeOf<Int?>()-> OptionType.INTEGER
+					it.type == typeOf<Boolean>() || it.type == typeOf<Boolean?>()-> OptionType.BOOLEAN
 					it.type.isSubtypeOf(typeOf<User>()) -> OptionType.USER
 					it.type.isSubtypeOf(typeOf<Channel>()) -> OptionType.CHANNEL
 					it.type.isSubtypeOf(typeOf<Role>()) -> OptionType.ROLE

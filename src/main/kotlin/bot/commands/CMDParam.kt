@@ -13,11 +13,11 @@ annotation class CMDParam(val description : String) {
 		fun getParamAsAny(value : OptionMapping?, type : KType) : Any? {
 			value ?: return null
 			return when {
-				type == typeOf<String>() -> value.asString
-				type == typeOf<Boolean>() -> value.asBoolean
-				type == typeOf<Long>() -> value.asString.toLongOrNull()
-				type == typeOf<Int>() -> value.asInt
-				type == typeOf<Double>() -> value.asDouble
+				type == typeOf<String>() || type == typeOf<String?>() -> value.asString
+				type == typeOf<Boolean>() || type == typeOf<Boolean?>() -> value.asBoolean
+				type == typeOf<Long>() || type == typeOf<Long?>() -> value.asString.toLongOrNull()
+				type == typeOf<Int>() || type == typeOf<Int?>() -> value.asInt
+				type == typeOf<Double>() || type == typeOf<Double?>() -> value.asDouble
 
 				type.isSupertypeOf(typeOf<Member>()) -> value.asMember
 				type.isSupertypeOf(typeOf<User>()) -> value.asUser
