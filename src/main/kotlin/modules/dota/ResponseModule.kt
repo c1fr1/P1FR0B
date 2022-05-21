@@ -110,7 +110,8 @@ class ResponseModule(private val basePath : String = "resources/responses/",
 		} else if (voiceLine.size > 1) {
 			e.reply("multiple voice lines found").complete()
 		} else {
-			e.replyFile(File(voiceLine.first().path(basePath))).complete()
+			val entry = voiceLine.first()
+			e.replyFile(File(entry.path(basePath)), "${entry.heroName}${entry.id}.mp3").complete()
 		}
 	}
 }
