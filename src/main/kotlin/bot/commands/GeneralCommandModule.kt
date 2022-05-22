@@ -222,7 +222,7 @@ class GeneralCommandModule : ListenerModule() {
 					typeOf<SlashCommandInteractionEvent>() -> e
 					typeOf<Bot>() -> bot
 					else -> if (it.kind == KParameter.Kind.INSTANCE) module else
-						CMDParam.getParamAsAny(e.getOption(it.name!!), it.type)
+						CMDParam.getParamAsAny(e.getOption(it.name!!.toAPIRegex()), it.type)
 				}
 			}.filter { !it.key.isOptional || it.value != null }
 			val reply = if (cmd.returnType == typeOf<String>() || cmd.returnType.isSubtypeOf(typeOf<Message>())) {
