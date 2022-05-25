@@ -66,7 +66,7 @@ class ModuleManagerModule : BotModule() {
 
 	@SlashCommand("adds an available module to the bot",
 		"starts running the specified module on this bot\n\n" +
-				"`/start-module <module id> <constructor parameters>`")
+				"`/start-module <module id> <constructor parameters>`", true)
 	fun startModule(bot : Bot,
 		@CMDParam("identifier of the module") module : String,
 		@CMDParam("parameters for the constructor of the module") parameters : String = "") : String {
@@ -94,7 +94,7 @@ class ModuleManagerModule : BotModule() {
 	@SlashCommand("removes a module from this bot",
 		"removes the specified module from this bot\n\n" +
 				"`/stop-module <module id>`\n" +
-				"`/stop-module <module name>`")
+				"`/stop-module <module name>`", true)
 	fun stopModule(bot : Bot, @CMDParam("identifier of the module") module : String) : String {
 		for (m in bot.getModules().filter {it.id == ModuleID.getID(module)}) {
 			bot.removeModule(m)
