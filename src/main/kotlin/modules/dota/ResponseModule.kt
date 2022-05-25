@@ -117,7 +117,9 @@ class ResponseModule(private val basePath : String = "resources/responses/",
 }
 
 private fun toSimpleText(str : String) : String {
-	return str.lowercase().replace(Regex("([^a-z ])"), "").trim()
+	return str.lowercase()
+		.replace(Regex("([^a-z ])"), "")
+		.replace(Regex(" +"), " ").trim()
 }
 
 data class ResponseEntry(val simpleText : String, val heroName : String, val id : Int) {
