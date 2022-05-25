@@ -25,9 +25,13 @@ for hero in db.query(Hero) :
         if (tex is None or tex in disallowed) :
             continue
         tex = tex.strip()
-        path = "responses/" + hero.name + "/" + str(id) + ".mp3"
-        file.write(hero.name + ", " + tex + ", " + str(id) + "\n")
-        shutil.copyfile(response.mp3.lstrip("/"), path)
-        id = id + 1
+        fromPath = response.mp3.lstrip("/")
+        if (os.path.isfile(fromPath)) :
+            path = "responses/" + hero.name + "/" + str(id) + ".mp3"
+            file.write(hero.name + ", " + tex + ", " + str(id) + "\n")
+            shutil.copyfile(fromPath, path)
+            id = id + 1
+        else :
+            print("Ignoring " + fromPath + " because it doesn't exist")
 
 file.close()
