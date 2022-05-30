@@ -7,15 +7,20 @@ import bot.modules.ModuleID
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import java.io.File
+import java.io.FileOutputStream
 import java.io.FileReader
 import kotlin.io.path.ExperimentalPathApi
 
 @ExperimentalPathApi
 @ModuleID("Dota Responses")
 class ResponseModule(private val basePath : String = "resources/responses/",
-                     dictPath : String = "resources/response-data.txt") : ListenerModule() {
+                     dictPath : String = "resources/response-data.txt",
+                     val blacklistPath : String = "resources/no-respond.txt") : ListenerModule() {
 
 	override val name: String = "Dota Responses"
+
+	var blackListed = FileReader(blacklistPath).readLines().map { it.trim() } as ArrayList
+
 	val dictionary = FileReader(dictPath).readLines().map {l ->
 		val segments = l.split(",").map { it.trim() }
 		val heroName = segments[0]
@@ -24,10 +29,10 @@ class ResponseModule(private val basePath : String = "resources/responses/",
 		ResponseEntry(text, heroName, id)
 	}
 
-	override fun onMessageReceived(event: MessageReceivedEvent) {
+	override fun onMessageReceived(event : MessageReceivedEvent) {
 		if (event.author.isBot) return
 		val entry = getRandomEntry(event.message.contentRaw)
-		if (entry != null) {
+		if (entry != null && !blackListed.any {it == entry.simpleText }) {
 			event.channel.sendFile(File(entry.path(basePath)), "${entry.heroName}${entry.id}.mp3").complete()
 		}
 	}
@@ -113,6 +118,16 @@ class ResponseModule(private val basePath : String = "resources/responses/",
 			val entry = voiceLine.first()
 			e.replyFile(File(entry.path(basePath)), "${entry.heroName}${entry.id}.mp3").complete()
 		}
+	}
+
+	@SlashCommand("adds a phrase to the blacklist",
+		"adds the specified phrase to the list of phrases that don't get sent when a normal message is " +
+				"sent, the responses can still be accessed with `/send-response`", true)
+	fun blackListResponse(@CMDParam("phrase to be blacklisted") phrase : String) {
+		blackListed.add(phrase)
+		val fos = FileOutputStream(blacklistPath, true)
+		fos.write("\n$name".encodeToByteArray())
+		fos.close()
 	}
 }
 

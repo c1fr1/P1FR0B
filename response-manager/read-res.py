@@ -19,10 +19,9 @@ file = open("response-data.txt", "w")
 for hero in db.query(Hero) :
     id = 0
     os.mkdir("responses/" + hero.name + "/")
-    disallowed = ["yes", "yup", "no", "oh", "hah", "uh", "gah", "why", "huh", "almost", "hm", "hmm", "hmmm", "ah", "ahh", "ahhh", "thanks", "thank-you", "hey", "ready", "ow", "nope", "sure", "yeah", "oof", "wait", "he", "eh", "yep", "wow", "what", "ooh", "ok", "alright", "next"]
     for response in hero.responses :
         tex = response.text_simple
-        if (tex is None or tex in disallowed) :
+        if (tex is None) :
             continue
         tex = tex.strip()
         fromPath = response.mp3.lstrip("/")
