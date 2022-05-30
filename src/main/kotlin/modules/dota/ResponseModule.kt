@@ -130,7 +130,7 @@ class ResponseModule(private val basePath : String = "resources/responses/",
 		}
 		blackListed.add(simple)
 		val fos = FileOutputStream(blacklistPath, true)
-		fos.write("\n$name".encodeToByteArray())
+		fos.write("\n$simple".encodeToByteArray())
 		fos.close()
 		return "\"$simple\" added to the blacklist"
 	}
