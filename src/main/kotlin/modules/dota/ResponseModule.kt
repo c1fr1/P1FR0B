@@ -123,11 +123,16 @@ class ResponseModule(private val basePath : String = "resources/responses/",
 	@SlashCommand("adds a phrase to the blacklist",
 		"adds the specified phrase to the list of phrases that don't get sent when a normal message is " +
 				"sent, the responses can still be accessed with `/send-response`", true)
-	fun blackListResponse(@CMDParam("phrase to be blacklisted") phrase : String) {
-		blackListed.add(phrase)
+	fun blacklistResponse(@CMDParam("phrase to be blacklisted") phrase : String) : String {
+		val simple = toSimpleText(phrase)
+		if (blackListed.contains(simple)){
+			return "\"$simple\" already blacklisted"
+		}
+		blackListed.add(simple)
 		val fos = FileOutputStream(blacklistPath, true)
 		fos.write("\n$name".encodeToByteArray())
 		fos.close()
+		return "\"$simple\" added to the blacklist"
 	}
 }
 
