@@ -30,7 +30,8 @@ class WiggleModule : ListenerModule() {
 		if (event.user!!.isBot) return
 		val m = event.channel.getHistoryAround(event.messageId, 1).complete()
 			.getMessageById(event.messageId) ?: return
-		for (reaction in m.reactions.filter {it.reactionEmote.id == IDS.getID("WIGGLE")!!}) {
+		for (reaction in m.reactions.filter { it.reactionEmote.isEmote }
+			.filter {it.reactionEmote.id == IDS.getID("WIGGLE")!!}) {
 			reaction.removeReaction().complete()
 		}
 	}
