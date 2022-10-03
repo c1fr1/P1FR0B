@@ -35,8 +35,9 @@ class RoleManagerModule(private val reactionMessageID : String, private val reac
 		if (!bot.getGuild().emotes.any {it.name.equals(name, true)}) {
 			return "there must be an emote for this role first"
 		}
-		bot.getGuild().getTextChannelById(reactionMessageChannel)!!.getHistoryAround(reactionMessageID, 1).complete().retrievedHistory[0]!!
-			.addReaction(bot.getGuild().emotes.find { it.name.equals(name, true) }!!).complete()
+		bot.getGuild().getTextChannelById(reactionMessageChannel)!!.getHistoryAround(reactionMessageID, 1)
+			.complete().retrievedHistory[0]!!.addReaction(bot.getGuild().emotes
+			.find { it.name.equals(name, true) }!!).complete()
 		val fos = FileOutputStream(roleNameFile, true)
 		fos.write("\n$name".encodeToByteArray())
 		fos.close()
@@ -44,6 +45,23 @@ class RoleManagerModule(private val reactionMessageID : String, private val reac
 			bot.getGuild().createRole().setName(name).setPermissions().complete()
 		}
 		return "Role added!"
+	}
+
+	@SlashCommand(
+		"resets reactions",
+		"clears all of the reactions on the reaction message, then adds them again for each manageable role" +
+				"`/reset-reactions`",
+		true)
+	fun resetReactions(bot : Bot) : String {
+		val message = bot.getGuild().getTextChannelById(reactionMessageChannel)!!
+			.getHistoryAround(reactionMessageID, 1).complete().retrievedHistory[0]!!
+		message.reactions.map { it.removeReaction().complete() }
+
+		FileReader(roleNameFile).readLines().map { roleName ->
+			bot.getGuild().emotes.find { it.name.lowercase() == roleName.lowercase() }
+				?.let { message.addReaction(it).complete() }
+		}
+		return "reactions reset"
 	}
 
 	override fun onMessageReactionAdd(event: MessageReactionAddEvent) {
