@@ -9,8 +9,7 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent
 
 @ModuleID("Voice Channel Manager")
 class VCModule(private val roleId : String, private val vcChannelID : String) : ListenerModule() {
-	override val name: String
-		get() = "Voice Channel Manager"
+	override val name = "Voice Channel Manager"
 
 	override fun onGuildVoiceJoin(event: GuildVoiceJoinEvent) {
 		event.guild.addRoleToMember(event.member, role(event)).complete()

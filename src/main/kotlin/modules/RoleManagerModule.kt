@@ -16,8 +16,7 @@ class RoleManagerModule(private val reactionMessageID : String, private val reac
 
 	constructor(reactionMessageID: String, reactionMessageChannel : String, roleNameFile: String) : this(reactionMessageID, reactionMessageChannel, File(roleNameFile))
 
-	override val name: String
-		get() = "Role Manager"
+	override val name = "Role Manager"
 
 	override fun load(): Boolean {
 		return roleNameFile.isFile && super.load()

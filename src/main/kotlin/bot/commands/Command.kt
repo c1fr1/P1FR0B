@@ -20,6 +20,14 @@ class CommandParameter(
 			else -> false
 		}
 	}
+
+	override fun hashCode() : Int {
+		var result = type.hashCode()
+		result = 31 * result + name.hashCode()
+		result = 31 * result + description.hashCode()
+		result = 31 * result + required.hashCode()
+		return result
+	}
 }
 
 class Command(
@@ -37,5 +45,13 @@ class Command(
 					parameters.all { p -> other.options.any { p == it as Any } }
 			else -> false
 		}
+	}
+
+	override fun hashCode() : Int {
+		var result = functionName.hashCode()
+		result = 31 * result + shortDescription.hashCode()
+		result = 31 * result + ownerModule.hashCode()
+		result = 31 * result + parameters.contentHashCode()
+		return result
 	}
 }

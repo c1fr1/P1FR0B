@@ -30,7 +30,7 @@ abstract class ListenerModule : IBotModule, ListenerAdapter {
 	 * @param bot reference to the JDA object of a bot that is currently running
 	 */
 	override fun stop(bot: Bot) {
-		bot.addListenerAdapter(this)
+		bot.removeListenerAdapter(this)
 		bots.remove(bot)
 	}
 

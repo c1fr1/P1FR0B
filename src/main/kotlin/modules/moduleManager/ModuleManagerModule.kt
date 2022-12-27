@@ -1,21 +1,21 @@
 package modules.moduleManager
 
-import bot.*
-import bot.commands.*
+import bot.Bot
+import bot.IDS
+import bot.Logger
+import bot.commands.CMDParam
+import bot.commands.SlashCommand
 import bot.modules.BotModule
 import bot.modules.IModule
 import bot.modules.ModuleID
 import net.dv8tion.jda.api.entities.User
 import org.reflections.Reflections
-import java.lang.RuntimeException
 import kotlin.reflect.KClass
-import kotlin.text.StringBuilder
 
 @ModuleID("Module Manager")
 class ModuleManagerModule : BotModule() {
 
-	override val name: String
-		get() = "Module Manager"
+	override val name = "Module Manager"
 
 	private var manager : User? = null
 
@@ -24,11 +24,11 @@ class ModuleManagerModule : BotModule() {
 	}
 
 	override fun load(): Boolean {
-		return IDS.get("MANAGER") != null
+		return IDS["MANAGER"] != null
 	}
 
 	override fun onStartup(bot : Bot) : Boolean {
-		this.manager = bot.getGuild().jda.retrieveUserById(IDS.get("MANAGER")!!).complete()
+		this.manager = bot.getGuild().jda.retrieveUserById(IDS["MANAGER"]!!).complete()
 
 		if (this.manager == null)
 			Logger.error("Module Manager failed to find a MANAGER to send messages to")

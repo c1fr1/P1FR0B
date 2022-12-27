@@ -8,9 +8,7 @@ import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
-import net.dv8tion.jda.api.utils.cache.CacheFlag
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 
@@ -21,7 +19,7 @@ import kotlin.reflect.KFunction
 @Suppress("UNCHECKED_CAST")
 class Bot(targetGuildSnowflake : String) {
 
-	private var jdaBuilder : JDABuilder? = JDABuilder.createDefault(IDS.get("API_KEY"))
+	private var jdaBuilder : JDABuilder? = JDABuilder.createDefault(IDS["API_KEY"])
 		.enableIntents(GatewayIntent.GUILD_MEMBERS)
 		.setMemberCachePolicy(MemberCachePolicy.ONLINE)
 
