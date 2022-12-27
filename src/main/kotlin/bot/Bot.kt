@@ -7,6 +7,8 @@ import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.requests.GatewayIntent
+import net.dv8tion.jda.api.utils.MemberCachePolicy
+import net.dv8tion.jda.api.utils.cache.CacheFlag
 import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -18,8 +20,9 @@ import kotlin.reflect.KFunction
 @Suppress("UNCHECKED_CAST")
 class Bot(targetGuildSnowflake : String) {
 
-	private var jdaBuilder : JDABuilder? = JDABuilder.createDefault(IDS.getID("API_KEY"))
+	private var jdaBuilder : JDABuilder? = JDABuilder.createDefault(IDS.get("API_KEY"))
 		.enableIntents(GatewayIntent.GUILD_MEMBERS)
+		.setMemberCachePolicy(MemberCachePolicy.ONLINE)
 
 	private var jdaObj : JDA? = null
 
@@ -43,9 +46,7 @@ class Bot(targetGuildSnowflake : String) {
 		jdaObj = jdaBuilder!!.build().awaitReady()
 		jdaBuilder = null
 
-		for (module in modules.clone() as List<*>) {
-			(module as IModule).onStartup(this)
-		}
+		modules.forEach { it.onStartup(this) }
 
 		Logger.info("bot is now running!")
 	}
