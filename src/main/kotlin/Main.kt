@@ -14,7 +14,10 @@ import kotlin.io.path.ExperimentalPathApi
 import kotlin.system.exitProcess
 
 @ExperimentalPathApi
-fun main() {
+fun main(args: Array<String>) {
+	/* call with a command line argument to redirect the IDS_PUBLIC file */
+	IDS.init(args.getOrNull(0))
+
 	try {
 		val bot = Bot(IDS.get("DPACK_GUILD")!!)
 		bot.addModule(ModuleManagerModule())

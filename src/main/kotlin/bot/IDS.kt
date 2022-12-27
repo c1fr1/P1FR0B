@@ -21,11 +21,12 @@ object IDS {
 		fileReader.close()
 	}
 
-	init {
+	fun init(publicFile: String?) {
+		val publicFilename = "resources/${publicFile ?: "IDS_PUBLIC"}"
 		try {
-			collectFromFile("resources/IDS_PUBLIC")
+			collectFromFile(publicFilename)
 		} catch (_ : FileNotFoundException) {
-			Logger.warn("public IDS file missing, this will likely cause many problems, make sure there is a resources/IDS_PUBLIC in the working directory")
+			Logger.warn("public IDS file missing, this will likely cause many problems, make sure there is a $publicFilename in the working directory")
 		}
 
 		try {
