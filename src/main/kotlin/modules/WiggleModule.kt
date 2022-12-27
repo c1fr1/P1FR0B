@@ -14,7 +14,7 @@ class WiggleModule : ListenerModule() {
 		get() = "Wiggle"
 
 	override fun load() : Boolean {
-		return super.load() && IDS.getID("WIGGLE") != null
+		return super.load() && IDS.get("WIGGLE") != null
 	}
 
 	@SlashCommand("wiggle", "wOggle")
@@ -22,7 +22,7 @@ class WiggleModule : ListenerModule() {
 	           @CMDParam("id of the message you wish to wiggle") messageId : Long = 0L) {
 		var target = e.channel.getHistoryAround(e.messageChannel.latestMessageId, 1).complete().retrievedHistory[0]
 		target = e.channel.getHistoryAround(messageId, 1).complete().getMessageById(messageId) ?: target
-		target.addReaction(bot.getGuild().getEmoteById(IDS.getID("WIGGLE")!!)!!).complete()
+		target.addReaction(bot.getGuild().getEmoteById(IDS.get("WIGGLE")!!)!!).complete()
 		e.reply("w0ggle").flatMap { it.deleteOriginal() }.complete()
 	}
 
@@ -31,7 +31,7 @@ class WiggleModule : ListenerModule() {
 		val m = event.channel.getHistoryAround(event.messageId, 1).complete()
 			.getMessageById(event.messageId) ?: return
 		for (reaction in m.reactions.filter { it.reactionEmote.isEmote }
-			.filter {it.reactionEmote.id == IDS.getID("WIGGLE")!!}) {
+			.filter {it.reactionEmote.id == IDS.get("WIGGLE")!!}) {
 			reaction.removeReaction().complete()
 		}
 	}

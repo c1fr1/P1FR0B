@@ -3,6 +3,7 @@
 log
 lib/
 resources/IDS_PRIVATE
+resources/IDS_PUBLIC_DEV
 resources/responses/
 response-manager/sounds/
 

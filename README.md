@@ -7,6 +7,13 @@ For security reasons, the API is stored in `resources/IDS_PRIVATE` which is incl
 `resources/IDS_PRIVATE` in the format described below. Whitespace on either side of the semicolon
 is ignored.
 
+### Public IDs
+
+By default, the bot reads `resources/IDS_PUBLIC` for public IDs. But for testing the bot on your own server,
+you're going to have to change these values. To do this, please copy the file into `resources/IDS_PUBLIC_DEV` and
+change the values in there. Then, when running the bot on your own server, pass in the command line argument
+`IDS_PUBLIC_DEV`.
+
 ```
 API_KEY : ABCDE.ABCDE
 ```
@@ -21,7 +28,7 @@ the `ResponseManager`.
 
 The build script is [`build.gradle.kts`](build.gradle.kts) which is written with the Kotlin DSL for
 Gradle. You can use the `run` build target (`gradle run`) for testing and debugging, but
-the `shadowJar` target is used for deployment.
+the `shadowJar` target is used for deployment. Make sure to also set `IDS_PUBLIC_DEV` for Program Arguments.
 
 # Structure
 
