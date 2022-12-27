@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
 import net.dv8tion.jda.api.utils.cache.CacheFlag
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 
@@ -46,7 +47,7 @@ class Bot(targetGuildSnowflake : String) {
 		jdaObj = jdaBuilder!!.build().awaitReady()
 		jdaBuilder = null
 
-		modules.forEach { it.onStartup(this) }
+		ArrayList(modules).forEach { it.onStartup(this) }
 
 		Logger.info("bot is now running!")
 	}
