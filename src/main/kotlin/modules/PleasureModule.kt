@@ -5,6 +5,7 @@ import bot.commands.SlashCommand
 import bot.modules.ListenerModule
 import bot.modules.ModuleID
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
+import java.util.concurrent.TimeUnit
 
 @ModuleID("pleasure")
 class PleasureModule : ListenerModule() {
@@ -12,20 +13,25 @@ class PleasureModule : ListenerModule() {
 
     @SlashCommand("pleasure", "send pleasure someone's way")
     fun pleasure(event : SlashCommandInteractionEvent, @CMDParam("who to pleasure") playerName: String? = null) {
-        val jda = getBot().jda
-
         val user = if (playerName == null) {
-            jda.getUserById(258485243038662657L) /* ebet */
+            getBot().jda.getUserById(258485243038662657L) /* ebet */
         } else {
-            getBot().getGuild().loadMembers()
-            getBot().getGuild().jda.getUsersByName(playerName, true).firstOrNull()
+            val searchName = playerName.lowercase()
+            getBot().getGuild().members.find { (it.nickname ?: it.user.name).lowercase().contains(searchName) }?.user
         }
 
         if (user == null) {
-            event.reply("Can't find that person").complete()
+            event.reply("Can't pleasure that person").queue {
+                it.deleteOriginal().queueAfter(1, TimeUnit.SECONDS)
+            }
             return
         }
 
-
+        event.reply("pleasuring...").and(user.openPrivateChannel()) { hook, channel ->
+            hook.deleteOriginal().queue()
+            for (i in 0 until 5) {
+                channel.sendMessage("augh you bitch").queue()
+            }
+        }.queue()
     }
 }
