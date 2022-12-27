@@ -10,11 +10,10 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent
 @ModuleID("Wiggle")
 class WiggleModule : ListenerModule() {
 
-	override val name: String
-		get() = "Wiggle"
+	override val name = "Wiggle"
 
 	override fun load() : Boolean {
-		return super.load() && IDS.get("WIGGLE") != null
+		return super.load() && IDS["WIGGLE"] != null
 	}
 
 	@SlashCommand("wiggle", "wOggle")
@@ -22,7 +21,7 @@ class WiggleModule : ListenerModule() {
 	           @CMDParam("id of the message you wish to wiggle") messageId : Long = 0L) {
 		var target = e.channel.getHistoryAround(e.messageChannel.latestMessageId, 1).complete().retrievedHistory[0]
 		target = e.channel.getHistoryAround(messageId, 1).complete().getMessageById(messageId) ?: target
-		target.addReaction(bot.getGuild().getEmoteById(IDS.get("WIGGLE")!!)!!).complete()
+		target.addReaction(bot.getGuild().getEmoteById(IDS["WIGGLE"]!!)!!).complete()
 		e.reply("w0ggle").flatMap { it.deleteOriginal() }.complete()
 	}
 
@@ -31,7 +30,7 @@ class WiggleModule : ListenerModule() {
 		val m = event.channel.getHistoryAround(event.messageId, 1).complete()
 			.getMessageById(event.messageId) ?: return
 		for (reaction in m.reactions.filter { it.reactionEmote.isEmote }
-			.filter {it.reactionEmote.id == IDS.get("WIGGLE")!!}) {
+			.filter {it.reactionEmote.id == IDS["WIGGLE"]!!}) {
 			reaction.removeReaction().complete()
 		}
 	}

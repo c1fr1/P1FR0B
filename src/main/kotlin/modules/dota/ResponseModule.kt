@@ -17,7 +17,7 @@ class ResponseModule(private val basePath : String = "resources/responses/",
                      dictPath : String = "resources/response-data.txt",
                      val blacklistPath : String = "resources/no-respond.txt") : ListenerModule() {
 
-	override val name: String = "Dota Responses"
+	override val name = "Dota Responses"
 
 	var blackListed = FileReader(blacklistPath).readLines().map { it.trim() } as ArrayList
 

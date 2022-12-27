@@ -9,8 +9,7 @@ import java.util.*
 
 @ModuleID("Pseudo Admin")
 class PseudoAdminModule : BotModule() {
-	override val name: String
-		get() = "Pseudo Admin"
+	override val name = "Pseudo Admin"
 
 	private val primaryServer = Region.US_EAST
 	private val secondaryServer = Region.US_CENTRAL

@@ -12,8 +12,7 @@ import java.util.*
 
 @ModuleID("Among Us Room Manager")
 class AmongUsModule(val tcTarget : String) : ListenerModule() {
-	override val name: String
-		get() = "Among Us Room Manager"
+	override val name = "Among Us Room Manager"
 
 	var roomCode : String? = null
 	var oldVCName : String? = null

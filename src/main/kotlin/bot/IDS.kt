@@ -41,5 +41,5 @@ object IDS {
 	 * @param name name of the ID
 	 * @return value of the ID, will be null if there is not an ID with the given name
 	 */
-	fun get(name : String) = map[name]
+	operator fun get(name : String) = map[name]
 }
