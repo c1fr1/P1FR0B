@@ -21,7 +21,7 @@ class Bot(targetGuildSnowflake : String) {
 
 	private var jdaBuilder : JDABuilder? = JDABuilder.createDefault(IDS["API_KEY"])
 		.enableIntents(GatewayIntent.GUILD_MEMBERS)
-		.setMemberCachePolicy(MemberCachePolicy.ONLINE)
+		.setMemberCachePolicy(MemberCachePolicy.ALL)
 
 	private var jdaObj : JDA? = null
 
@@ -44,6 +44,9 @@ class Bot(targetGuildSnowflake : String) {
 		}
 		jdaObj = jdaBuilder!!.build().awaitReady()
 		jdaBuilder = null
+
+		/* load member cache */
+		getGuild().loadMembers().get()
 
 		ArrayList(modules).forEach { it.onStartup(this) }
 

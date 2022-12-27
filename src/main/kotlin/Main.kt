@@ -1,10 +1,7 @@
 import bot.Bot
 import bot.IDS
 import bot.Logger
-import modules.PseudoAdminModule
-import modules.RoleManagerModule
-import modules.WelcomeModule
-import modules.WiggleModule
+import modules.*
 import modules.amongUs.AmongUsModule
 import modules.dota.ResponseModule
 import modules.moduleManager.ModuleManagerModule
@@ -30,6 +27,7 @@ fun main(args: Array<String>) {
 		bot.addModule(
 			WelcomeModule(FileReader("resources/welcome-message.txt").readText(),
 				IDS["MEMBER_ROLE"]!!))
+		bot.addModule(PleasureModule())
 		bot.startup()
 	} catch (e : Exception) {
 		Logger.logError(e)
