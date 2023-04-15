@@ -28,6 +28,7 @@ fun main(args: Array<String>) {
 			WelcomeModule(FileReader("resources/welcome-message.txt").readText(),
 				IDS["MEMBER_ROLE"]!!))
 		bot.addModule(PleasureModule())
+		bot.addModule(CommisModule())
 		bot.startup()
 	} catch (e : Exception) {
 		Logger.logError(e)
