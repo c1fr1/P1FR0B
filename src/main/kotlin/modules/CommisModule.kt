@@ -28,7 +28,7 @@ class CommisModule() : ListenerModule() {
 				sValue = "0$sValue"
 			}
 			//val barOptions = " ▏▎▍▌▋▊▉█"
-			val barOptions = "█"
+			val barOptions = "▌█"
 			val barLength = 40
 			val percentRemaining = remainingSeconds.toFloat() / totalDuration.toFloat()
 
