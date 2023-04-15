@@ -35,7 +35,7 @@ class CommisModule() : ListenerModule() {
 			val barText = StringBuilder()
 			for (i in 0 until barLength) {
 				val thisSegment = (percentRemaining) * 40 - i
-				barText.append(if (thisSegment >= 1) "█" else if (thisSegment < 0) " " else {
+				barText.append(if (thisSegment >= 1) "█" else if (thisSegment <= 0) " " else {
 						barOptions[floor(thisSegment * barOptions.length).toInt()]
 				})
 			}
