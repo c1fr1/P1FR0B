@@ -1,25 +1,28 @@
-package bot
+package bot.storage
 
-import bot.modules.IModule
+import bot.Logger
 import java.io.File
 import java.io.FileOutputStream
 import java.nio.ByteBuffer
 import java.util.concurrent.Executors
 
-abstract class Storage<E>(module: IModule) {
-	private val pool = Executors.newFixedThreadPool(1)
+abstract class Storage<StorageObject> {
+	companion object {
+		/* only one storage file can be written at a time */
+		private val pool = Executors.newFixedThreadPool(1)
+	}
 
-	private var current: E? = null
+	private var currentStorageObject: StorageObject? = null
 
 	abstract val filename: String
 
-	abstract fun default(): E
-	abstract fun serialize(data: E): ByteBuffer
-	abstract fun deserialize(buffer: ByteBuffer): E
+	abstract fun default(): StorageObject
+	abstract fun serialize(data: StorageObject): ByteBuffer
+	abstract fun deserialize(buffer: ByteBuffer): StorageObject
 
-	private fun getFile() = File("resources/${filename}")
+	private fun getFile() = File("resources/modules/${filename}")
 
-	private fun retrieve(): E {
+	private fun retrieve(): StorageObject {
 		return try {
 			val file = getFile()
 			if (!file.exists()) return default()
@@ -31,11 +34,11 @@ abstract class Storage<E>(module: IModule) {
 		}
 	}
 
-	fun get(): E {
-		val current = current
+	fun get(): StorageObject {
+		val current = currentStorageObject
 		return if (current == null) {
 			val data = retrieve()
-			this.current = data
+			this.currentStorageObject = data
 			data
 		} else {
 			current

@@ -1,7 +1,7 @@
 package modules
 
 import bot.Bot
-import bot.Storage
+import bot.storage.Storage
 import bot.commands.CMDParam
 import bot.commands.SlashCommand
 import bot.modules.ListenerModule
@@ -20,7 +20,7 @@ class PleasureModule : ListenerModule() {
 	data class PleasureEntry(val from: Long, val to: Long, val time: Date)
 	data class PleasureLog(val log: ArrayList<PleasureEntry>, val latest: HashMap<Long, Date>)
 
-	private val storage = object : Storage<PleasureLog>(this) {
+	private val storage = object : Storage<PleasureLog>() {
 		override val filename = "pleasure.log"
 
 		override fun default() = PleasureLog(ArrayList(), HashMap())
