@@ -5,6 +5,7 @@ lib/
 resources/IDS_PRIVATE
 resources/IDS_PUBLIC_DEV
 resources/responses/
+resources/response-data.txt
 response-manager/sounds/
 
 # gradle
