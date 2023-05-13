@@ -10,6 +10,7 @@ import bot.modules.IModule
 import bot.modules.ModuleID
 import net.dv8tion.jda.api.entities.User
 import org.reflections.Reflections
+import org.reflections.util.ConfigurationBuilder
 import kotlin.reflect.KClass
 
 @ModuleID("Module Manager")
@@ -20,7 +21,7 @@ class ModuleManagerModule : BotModule() {
 	private var manager : User? = null
 
 	companion object {
-		private val reflections = Reflections("")
+		private val reflections = Reflections(ConfigurationBuilder().forPackages("modules"))
 	}
 
 	override fun load(): Boolean {
