@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
+import java.io.FileNotFoundException
 import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -32,7 +33,7 @@ class Bot(targetGuildSnowflake : String) {
 	val jda : JDA get() { return jdaObj!! }
 
 	init {
-		addModule(GeneralCommandModule())
+		addModule { GeneralCommandModule() }
 	}
 
 	/**
@@ -67,36 +68,49 @@ class Bot(targetGuildSnowflake : String) {
 
 	/**
 	 * adds a module to the bot
-	 * @param module a module that will be started now or when the bot starts
+	 * will not add the module if it could not be constructed
+	 * @param createModule closure that constructs the module, could error
+	 * @return could the module be added
 	 */
-	fun addModule(module : IModule) : Boolean {
-		modules.add(module)
+	fun addModule(createModule : () -> IModule) : Boolean {
+		val newModule = try {
+			createModule()
+		} catch (ex: Throwable) {
+			Logger.info("Could not load module")
+			Logger.logError(ex)
+			return false
+		}
+
+		modules.add(newModule)
+
 		try {
-			if (!module.load()) {
-				Logger.info("failed to load module ${module.id}")
-				modules.remove(module)
+			if (!newModule.load()) {
+				Logger.info("failed to load module ${newModule.id}")
+				modules.remove(newModule)
 			}
 		} catch (e : Throwable) {
-			Logger.warn("failed to load module ${module.id}")
-			modules.remove(module)
+			Logger.warn("failed to load module ${newModule.id}")
+			modules.remove(newModule)
 			Logger.logError(e)
 		}
-		if (isRunning()) {
-			return if (module.onStartup(this)) {
-				for (m in modules) {
-					m.onAddModule(module)
-					module.onAddModule(m)
+
+		return if (isRunning()) {
+			if (newModule.onStartup(this)) {
+				for (existingModule in modules) {
+					existingModule.onAddModule(newModule)
+					newModule.onAddModule(existingModule)
 				}
-				Logger.verbose("added module ${module.id}")
+				Logger.verbose("added module ${newModule.id}")
 				true
 			} else {
-				Logger.warn("failed to load module ${module.id}")
-				modules.remove(module)
+				Logger.warn("failed to load module ${newModule.id}")
+				modules.remove(newModule)
 				false
 			}
+		} else {
+			Logger.verbose("added module ${newModule.id}")
+			true
 		}
-		Logger.verbose("added module ${module.id}")
-		return true
 	}
 
 	/**
@@ -123,7 +137,7 @@ class Bot(targetGuildSnowflake : String) {
 			}
 		}
 
-		addModule(module)
+		addModule { module }
 
 		for (m in modules) {
 			if (m.id == module.id) {
@@ -168,7 +182,7 @@ class Bot(targetGuildSnowflake : String) {
 			return null
 		}
 		val ret = constructor.call()
-		addModule(ret)
+		addModule { ret }
 		for (m in modules) {
 			if (m.id == ret.id) {
 				return m as T

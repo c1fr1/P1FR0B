@@ -213,7 +213,6 @@ class GeneralCommandModule : ListenerModule() {
 	}
 
 	fun addCommand(cmd : KFunction<*>, module : IModule) {
-
 		val annotation = cmd.findAnnotation<SlashCommand>()!!
 		val cmdName = cmd.name.toAPIRegex()
 		val cmdFun = {e : SlashCommandInteractionEvent, bot : Bot ->
