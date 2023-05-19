@@ -29,12 +29,8 @@ class ModuleManagerModule : BotModule() {
 	}
 
 	override fun onStartup(bot : Bot) : Boolean {
-		this.manager = bot.getGuild().jda.retrieveUserById(IDS["MANAGER"]!!).complete()
+		bot.getGuild().jda.retrieveUserById(IDS["MANAGER"]!!).queue { user -> this.manager = user }
 
-		if (this.manager == null)
-			Logger.error("Module Manager failed to find a MANAGER to send messages to")
-
-		sendManagerMessage("Module \"$name\" has been added\nid: $id")
 		return super.onStartup(bot)
 	}
 
@@ -84,7 +80,8 @@ class ModuleManagerModule : BotModule() {
 
 		val params = (parameters).split(" ").filter { it.isNotEmpty() }
 		val ret = constructModule(moduleClass, params) ?: return "failed to create `$module` module"
-		return if (bot.addModule(ret)) {
+
+		return if (bot.addModule { ret }) {
 			"module added!"
 		} else {
 			"failed to start $module"
@@ -118,11 +115,10 @@ class ModuleManagerModule : BotModule() {
 	}
 
 	private fun sendManagerMessage(m : String) {
-		if (manager == null) {
+		manager?.openPrivateChannel()?.complete()?.sendMessage(m)?.complete() ?: run {
 			Logger.info("failed to send info to the manager")
 			return
 		}
-		manager!!.openPrivateChannel().complete().sendMessage(m).complete()
 	}
 
 	private fun <T : IModule> constructModule(module : KClass<out T>, params : List<String>) : T? {

@@ -17,18 +17,28 @@ fun main(args: Array<String>) {
 
 	try {
 		val bot = Bot(IDS["DPACK_GUILD"]!!)
-		bot.addModule(ModuleManagerModule())
-		bot.addModule(ResponseModule())
-		bot.addModule(AmongUsModule(IDS["AMONG_US_TEXT_CHANNEL"]!!))
-		bot.addModule(VCModule(IDS["VC_ROLE"]!!, IDS["VC_TEXT_CHANNEL"]!!))
-		bot.addModule(PseudoAdminModule())
-		bot.addModule(WiggleModule())
-		bot.addModule(RoleManagerModule(IDS["ROLE_TOGGLE_MESSAGE"]!!, IDS["ROLE_TOGGLE_CHANNEL"]!!, "resources/roles"))
-		bot.addModule(
-			WelcomeModule(FileReader("resources/welcome-message.txt").readText(),
-				IDS["MEMBER_ROLE"]!!))
-		bot.addModule(PleasureModule())
-		bot.addModule(CommisModule())
+		bot.addModule { ModuleManagerModule() }
+		bot.addModule { ResponseModule() }
+		bot.addModule { AmongUsModule(IDS["AMONG_US_TEXT_CHANNEL"]!!) }
+		bot.addModule { VCModule(IDS["VC_ROLE"]!!, IDS["VC_TEXT_CHANNEL"]!!) }
+		bot.addModule { PseudoAdminModule() }
+		bot.addModule { WiggleModule() }
+		bot.addModule {
+			RoleManagerModule(
+				IDS["ROLE_TOGGLE_MESSAGE"]!!,
+				IDS["ROLE_TOGGLE_CHANNEL"]!!,
+				"resources/roles"
+			)
+		}
+		bot.addModule {
+			WelcomeModule(
+				FileReader("resources/welcome-message.txt").readText(),
+				IDS["MEMBER_ROLE"]!!
+			)
+		}
+		bot.addModule { PleasureModule(true) }
+		bot.addModule { CommisModule() }
+
 		bot.startup()
 	} catch (e : Exception) {
 		Logger.logError(e)
