@@ -7,7 +7,6 @@ import bot.commands.SlashCommand
 import bot.modules.ListenerModule
 import bot.modules.ModuleID
 import net.dv8tion.jda.api.events.ShutdownEvent
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import java.net.InetAddress
 import java.net.ServerSocket
 import kotlin.concurrent.thread
@@ -34,7 +33,7 @@ class AutoNotifModule(val port : Int = 4730) : ListenerModule() {
 				val userSnowflake = messageString.substringBefore("|")
 				val sourceId = messageString.substringAfter("|").substringBefore(":")
 				val message = messageString.substringAfter(":")
-				val formattedMessage = "message from automatic notification server, source id `${sourceId}\n\n${message}`"
+				val formattedMessage = "${message}\n\nmessage was sent from `${sourceId}`"
 				bot.jda.getUserById(userSnowflake)?.openPrivateChannel()?.complete()?.sendMessage(formattedMessage)?.complete()
 			}
 		}
@@ -43,7 +42,7 @@ class AutoNotifModule(val port : Int = 4730) : ListenerModule() {
 	}
 
 	@SlashCommand("returns the port the server is advertising on", "returns the port the server is advertising on")
-	fun getPort(e : SlashCommandInteractionEvent) : String {
+	fun getPort() : String {
 		return "Notification server is running on port ${port}."
 	}
 
