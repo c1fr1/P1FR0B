@@ -38,6 +38,7 @@ fun main(args: Array<String>) {
 		}
 		bot.addModule { PleasureModule(true) }
 		bot.addModule { CommisModule() }
+		bot.addModule { AutoNotifModule() }
 
 		bot.startup()
 	} catch (e : Exception) {
