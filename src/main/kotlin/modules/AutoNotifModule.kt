@@ -1,6 +1,7 @@
 package modules
 
 import bot.Bot
+import bot.IDS
 import bot.Logger
 import bot.commands.SlashCommand
 import bot.modules.ListenerModule
@@ -19,7 +20,8 @@ class AutoNotifModule(val port : Int = 4730) : ListenerModule() {
 	var serverThread : Thread? = null
 
 	override fun onStartup(bot : Bot) : Boolean {
-		socket = ServerSocket(4730, 50, InetAddress.getLocalHost())
+		val address = IDS["NOTIF_SERVER_ADDRESS"].let { InetAddress.getByName(it) } ?: InetAddress.getLocalHost()
+		socket = ServerSocket(4730, 50, address)
 		Logger.verbose("socket addr: ${socket?.localSocketAddress}")
 		serverThread = thread {
 			while (serverThread != null && socket != null) {
