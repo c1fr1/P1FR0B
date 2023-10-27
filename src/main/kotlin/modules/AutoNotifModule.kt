@@ -34,7 +34,8 @@ class AutoNotifModule(val port : Int = 4730) : ListenerModule() {
 				val sourceId = messageString.substringAfter("|").substringBefore(":")
 				val message = messageString.substringAfter(":")
 				val formattedMessage = "${message}\n\nmessage was sent from `${sourceId}`"
-				bot.jda.getUserById(userSnowflake)?.openPrivateChannel()?.complete()?.sendMessage(formattedMessage)?.complete()
+				bot.jda.getUserById(userSnowflake)?.openPrivateChannel()?.complete()?.sendMessage(formattedMessage)?.complete() ?: Logger.warn(
+					"failed to send message, target: $userSnowflake | source ID: $sourceId, : message: $message")
 			}
 		}
 
