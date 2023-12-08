@@ -7,14 +7,15 @@ import bot.Logger
 import bot.modules.ModuleID
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.Permission
-import net.dv8tion.jda.api.entities.Channel
 import net.dv8tion.jda.api.entities.IMentionable
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.Message.Attachment
 import net.dv8tion.jda.api.entities.Role
 import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.entities.channel.Channel
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.interactions.commands.OptionType
+import net.dv8tion.jda.api.utils.messages.MessageEditData
 import java.util.*
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
@@ -232,7 +233,7 @@ class GeneralCommandModule : ListenerModule() {
 				reply!!.setEphemeral(false).editOriginal(ret as String).complete()
 			}
 			if (cmd.returnType.isSubtypeOf(typeOf<Message>())) {
-				reply!!.setEphemeral(false).editOriginal(ret as Message).complete()
+				reply!!.setEphemeral(false).editOriginal(MessageEditData.fromMessage(ret as Message)).complete()
 			}
 		}
 		val params = cmd.parameters.filter { it.kind != KParameter.Kind.INSTANCE }

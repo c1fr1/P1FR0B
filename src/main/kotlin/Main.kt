@@ -41,7 +41,7 @@ fun main(args: Array<String>) {
 		bot.addModule { AutoNotifModule() }
 
 		bot.startup()
-	} catch (e : Exception) {
+	} catch (e : Throwable) {
 		Logger.logError(e)
 		exitProcess(-1)
 	}

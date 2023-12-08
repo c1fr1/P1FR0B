@@ -6,7 +6,6 @@ import bot.Logger
 import bot.commands.SlashCommand
 import bot.modules.ListenerModule
 import bot.modules.ModuleID
-import net.dv8tion.jda.api.events.ShutdownEvent
 import java.net.InetAddress
 import java.net.ServerSocket
 import kotlin.concurrent.thread
@@ -45,11 +44,5 @@ class AutoNotifModule(val port : Int = 4730) : ListenerModule() {
 	@SlashCommand("returns the port the server is advertising on", "returns the port the server is advertising on")
 	fun getPort() : String {
 		return "Notification server is running on port ${port}."
-	}
-
-	override fun onShutdown(event : ShutdownEvent) {
-		socket?.close()
-		socket = null
-		serverThread = null
 	}
 }

@@ -49,7 +49,14 @@ class Bot(targetGuildSnowflake : String) {
 		/* load member cache */
 		getGuild().loadMembers().get()
 
-		ArrayList(modules).forEach { it.onStartup(this) }
+		ArrayList(modules).forEach {
+			try {
+				it.onStartup(this)
+			} catch (e : Throwable) {
+				Logger.logError(e)
+				removeModule(it)
+			}
+		}
 
 		Logger.info("bot is now running!")
 	}

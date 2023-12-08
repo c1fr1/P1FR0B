@@ -6,12 +6,6 @@ import net.dv8tion.jda.api.events.channel.ChannelCreateEvent
 import net.dv8tion.jda.api.events.channel.ChannelDeleteEvent
 import net.dv8tion.jda.api.events.channel.GenericChannelEvent
 import net.dv8tion.jda.api.events.channel.update.*
-import net.dv8tion.jda.api.events.emote.EmoteAddedEvent
-import net.dv8tion.jda.api.events.emote.EmoteRemovedEvent
-import net.dv8tion.jda.api.events.emote.GenericEmoteEvent
-import net.dv8tion.jda.api.events.emote.update.EmoteUpdateNameEvent
-import net.dv8tion.jda.api.events.emote.update.EmoteUpdateRolesEvent
-import net.dv8tion.jda.api.events.emote.update.GenericEmoteUpdateEvent
 import net.dv8tion.jda.api.events.guild.*
 import net.dv8tion.jda.api.events.guild.invite.GenericGuildInviteEvent
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent
@@ -31,7 +25,6 @@ import net.dv8tion.jda.api.events.interaction.command.MessageContextInteractionE
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.events.interaction.command.UserContextInteractionEvent
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
-import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent
 import net.dv8tion.jda.api.events.message.*
 import net.dv8tion.jda.api.events.message.react.*
 import net.dv8tion.jda.api.events.role.GenericRoleEvent
@@ -39,6 +32,7 @@ import net.dv8tion.jda.api.events.role.RoleCreateEvent
 import net.dv8tion.jda.api.events.role.RoleDeleteEvent
 import net.dv8tion.jda.api.events.role.update.*
 import net.dv8tion.jda.api.events.self.*
+import net.dv8tion.jda.api.events.session.ReadyEvent
 import net.dv8tion.jda.api.events.stage.GenericStageInstanceEvent
 import net.dv8tion.jda.api.events.stage.StageInstanceCreateEvent
 import net.dv8tion.jda.api.events.stage.StageInstanceDeleteEvent
@@ -74,10 +68,6 @@ interface ListenerAdapter : EventListener {
 
 	//JDA Events
 	fun onReady(event: ReadyEvent) {}
-	fun onResumed(event: ResumedEvent) {}
-	fun onReconnected(event: ReconnectedEvent) {}
-	fun onDisconnect(event: DisconnectEvent) {}
-	fun onShutdown(event: ShutdownEvent) {}
 	fun onStatusChange(event: StatusChangeEvent) {}
 	fun onException(event: ExceptionEvent) {}
 
@@ -86,13 +76,11 @@ interface ListenerAdapter : EventListener {
 	fun onUserContextInteraction(event : UserContextInteractionEvent) {}
 	fun onMessageContextInteraction(event : MessageContextInteractionEvent) {}
 	fun onButtonInteraction(event : ButtonInteractionEvent) {}
-	fun onSelectMenuInteraction(event : SelectMenuInteractionEvent) {}
 	fun onCommandAutoCompleteInteraction(event : CommandAutoCompleteInteractionEvent) {}
 	fun onModalInteraction(event : ModalInteractionEvent) {}
 
 	//User Events
 	fun onUserUpdateName(event: UserUpdateNameEvent) {}
-	fun onUserUpdateDiscriminator(event: UserUpdateDiscriminatorEvent) {}
 	fun onUserUpdateAvatar(event: UserUpdateAvatarEvent) {}
 	fun onUserUpdateOnlineStatus(event: UserUpdateOnlineStatusEvent) {}
 	fun onUserUpdateActivityOrder(event: UserUpdateActivityOrderEvent) {}
@@ -117,7 +105,6 @@ interface ListenerAdapter : EventListener {
 	fun onMessageReactionAdd(event: MessageReactionAddEvent) {}
 	fun onMessageReactionRemove(event: MessageReactionRemoveEvent) {}
 	fun onMessageReactionRemoveAll(event: MessageReactionRemoveAllEvent) {}
-	fun onMessageReactionRemoveEmote(event: MessageReactionRemoveEmoteEvent) {}
 
 	//PermissionOverride Events
 	fun onPermissionOverrideDelete(event: PermissionOverrideDeleteEvent) {}
@@ -215,9 +202,6 @@ interface ListenerAdapter : EventListener {
 
 	//Guild Voice Events
 	fun onGuildVoiceUpdate(event: GuildVoiceUpdateEvent) {}
-	fun onGuildVoiceJoin(event: GuildVoiceJoinEvent) {}
-	fun onGuildVoiceMove(event: GuildVoiceMoveEvent) {}
-	fun onGuildVoiceLeave(event: GuildVoiceLeaveEvent) {}
 	fun onGuildVoiceMute(event: GuildVoiceMuteEvent) {}
 	fun onGuildVoiceDeafen(event: GuildVoiceDeafenEvent) {}
 	fun onGuildVoiceGuildMute(event: GuildVoiceGuildMuteEvent) {}
@@ -241,14 +225,6 @@ interface ListenerAdapter : EventListener {
 	fun onRoleUpdateName(event: RoleUpdateNameEvent) {}
 	fun onRoleUpdatePermissions(event: RoleUpdatePermissionsEvent) {}
 	fun onRoleUpdatePosition(event: RoleUpdatePositionEvent) {}
-
-	//Emote Events
-	fun onEmoteAdded(event: EmoteAddedEvent) {}
-	fun onEmoteRemoved(event: EmoteRemovedEvent) {}
-
-	//Emote Update Events
-	fun onEmoteUpdateName(event: EmoteUpdateNameEvent) {}
-	fun onEmoteUpdateRoles(event: EmoteUpdateRolesEvent) {}
 
 	// Debug Events
 	fun onHttpRequest(event: HttpRequestEvent) {}
@@ -274,8 +250,6 @@ interface ListenerAdapter : EventListener {
 	fun onGenericGuildVoice(event: GenericGuildVoiceEvent) {}
 	fun onGenericRole(event: GenericRoleEvent) {}
 	fun onGenericRoleUpdate(event: GenericRoleUpdateEvent<*>) {}
-	fun onGenericEmote(event: GenericEmoteEvent) {}
-	fun onGenericEmoteUpdate(event: GenericEmoteUpdateEvent<*>) {}
 	fun onGenericPermissionOverride(event: GenericPermissionOverrideEvent) {}
 
 	companion object {

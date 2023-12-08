@@ -11,11 +11,10 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonPrimitive
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.Message
-import net.dv8tion.jda.api.entities.PrivateChannel
 import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.requests.RestAction
-import net.dv8tion.jda.api.requests.restaction.MessageAction
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -65,7 +64,7 @@ class PleasureModule(private val allowSelfPleasure: Boolean) : ListenerModule() 
 	}
 
 	private fun doPleasure(channel: PrivateChannel, fromName: String?): RestAction<MutableList<Message>> {
-		val list = (0 until 5).map { channel.sendMessage("augh you bitch") } as ArrayList<MessageAction>
+		val list = (0 until 5).map { channel.sendMessage("augh you bitch") } as ArrayList
 		fromName?.let { name -> list.add(channel.sendMessage("from $name, with love")) }
 
 		return RestAction.allOf(list)

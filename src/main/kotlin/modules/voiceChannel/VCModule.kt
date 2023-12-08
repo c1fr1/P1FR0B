@@ -4,21 +4,22 @@ import bot.modules.ListenerModule
 import bot.modules.ModuleID
 import net.dv8tion.jda.api.entities.Role
 import net.dv8tion.jda.api.events.guild.GenericGuildEvent
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent
 
 @ModuleID("Voice Channel Manager")
 class VCModule(private val roleId : String, private val vcChannelID : String) : ListenerModule() {
 	override val name = "Voice Channel Manager"
 
-	override fun onGuildVoiceJoin(event: GuildVoiceJoinEvent) {
-		event.guild.addRoleToMember(event.member, role(event)).complete()
-	}
+	override fun onGuildVoiceUpdate(event: GuildVoiceUpdateEvent) {
+		if (event.channelJoined != null) {
+			event.guild.addRoleToMember(event.member, role(event)).complete()
+		}
+		if (event.channelLeft != null) {
 
-	override fun onGuildVoiceLeave(event: GuildVoiceLeaveEvent) {
-		event.guild.removeRoleFromMember(event.member, role(event)).complete()
-		if (event.guild.voiceChannels.all {it.members.all {m -> m.user.isBot}}) {
-			clearMessageHistory(event)
+			event.guild.removeRoleFromMember(event.member, role(event)).complete()
+			if (event.guild.voiceChannels.all {it.members.all {m -> m.user.isBot}}) {
+				clearMessageHistory(event)
+			}
 		}
 	}
 

@@ -31,11 +31,11 @@ class RoleManagerModule(private val reactionMessageID : String, private val reac
 		if (isManageable(name)) {
 			return "role is already being managed"
 		}
-		if (!bot.getGuild().emotes.any {it.name.equals(name, true)}) {
+		if (!bot.getGuild().emojis.any {it.name.equals(name, true)}) {
 			return "there must be an emote for this role first"
 		}
 		bot.getGuild().getTextChannelById(reactionMessageChannel)!!.getHistoryAround(reactionMessageID, 1)
-			.complete().retrievedHistory[0]!!.addReaction(bot.getGuild().emotes
+			.complete().retrievedHistory[0]!!.addReaction(bot.getGuild().emojis
 			.find { it.name.equals(name, true) }!!).complete()
 		val fos = FileOutputStream(roleNameFile, true)
 		fos.write("\n$name".encodeToByteArray())
@@ -57,7 +57,7 @@ class RoleManagerModule(private val reactionMessageID : String, private val reac
 		message.reactions.map { it.removeReaction().complete() }
 
 		FileReader(roleNameFile).readLines().map { roleName ->
-			bot.getGuild().emotes.find { it.name.lowercase() == roleName.lowercase() }
+			bot.getGuild().emojis.find { it.name.lowercase() == roleName.lowercase() }
 				?.let { message.addReaction(it).complete() }
 		}
 		return "reactions reset"
@@ -65,9 +65,9 @@ class RoleManagerModule(private val reactionMessageID : String, private val reac
 
 	override fun onMessageReactionAdd(event: MessageReactionAddEvent) {
 		if (event.user!!.isBot) return
-		if (event.messageId == reactionMessageID && isManageable(event.reactionEmote.name)) {
+		if (event.messageId == reactionMessageID && isManageable(event.emoji.name)) {
 			event.reaction.removeReaction(event.user!!).complete()
-			val role = getRole(event.guild, event.reactionEmote.name) ?: return
+			val role = getRole(event.guild, event.emoji.name) ?: return
 			if (event.member!!.roles.any {it.name == role.name}) {
 				event.guild.removeRoleFromMember(event.member!!, role).complete()
 			} else {
