@@ -21,6 +21,12 @@ class AutoNotifModule(val port : Int = 4730) : ListenerModule() {
 		val address = IDS["NOTIF_SERVER_ADDRESS"].let { InetAddress.getByName(it) } ?: InetAddress.getLocalHost()
 		socket = ServerSocket(4730, 50, address)
 		Logger.verbose("socket addr: ${socket?.localSocketAddress}")
+		startServerThread()
+
+		return super.onStartup(bot)
+	}
+
+	fun startServerThread() {
 		serverThread = thread {
 			while (serverThread != null && socket != null) {
 				val conn = socket?.accept()
@@ -33,12 +39,10 @@ class AutoNotifModule(val port : Int = 4730) : ListenerModule() {
 				val sourceId = messageString.substringAfter("|").substringBefore(":")
 				val message = messageString.substringAfter(":")
 				val formattedMessage = "${message}\n\nmessage was sent from `${sourceId}`"
-				bot.jda.getUserById(userSnowflake)?.openPrivateChannel()?.complete()?.sendMessage(formattedMessage)?.complete() ?: Logger.warn(
+				getBot().jda.getUserById(userSnowflake)?.openPrivateChannel()?.complete()?.sendMessage(formattedMessage)?.complete() ?: Logger.warn(
 					"failed to send message, target: $userSnowflake | source ID: $sourceId, : message: $message")
 			}
 		}
-
-		return super.onStartup(bot)
 	}
 
 	@SlashCommand("returns the port the server is advertising on", "returns the port the server is advertising on")
