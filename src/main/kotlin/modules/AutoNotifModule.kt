@@ -43,6 +43,11 @@ class AutoNotifModule(val port : Int = 4730) : ListenerModule() {
 
 	@SlashCommand("returns the port the server is advertising on", "returns the port the server is advertising on")
 	fun getPort() : String {
-		return "Notification server is running on port ${port}."
+		val threadInfo = if (serverThread != null) {
+			"Server thread is ${if (serverThread!!.isAlive) "alive" else "dead"}"
+		} else {
+			"server thread is null"
+		}
+		return "Notification server is running on port $port. $threadInfo"
 	}
 }
