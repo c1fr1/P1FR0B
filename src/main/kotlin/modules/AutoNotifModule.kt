@@ -28,6 +28,7 @@ class AutoNotifModule(val port : Int = 4730) : ListenerModule() {
 
 	fun startServerThread() {
 		serverThread = thread {
+			Logger.verbose("starting notif server thread on port $port")
 			while (serverThread != null && socket != null) {
 				val conn = socket?.accept()
 				if (conn == null) {
@@ -42,6 +43,7 @@ class AutoNotifModule(val port : Int = 4730) : ListenerModule() {
 				getBot().jda.getUserById(userSnowflake)?.openPrivateChannel()?.complete()?.sendMessage(formattedMessage)?.complete() ?: Logger.warn(
 					"failed to send message, target: $userSnowflake | source ID: $sourceId, : message: $message")
 			}
+			Logger.error("server thread closed, thread is $serverThread, socket is $socket")
 		}
 	}
 
