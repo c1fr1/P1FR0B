@@ -56,7 +56,7 @@ class AutoNotifModule(val port : Int = 4730) : ListenerModule() {
 					}
 				}
 			} catch (e : Throwable) {
-				Logger.error("auto notif server thread threw an error")
+				Logger.error("auto notif server thread threw an unexpected error")
 				Logger.logError(e)
 			}
 		}
