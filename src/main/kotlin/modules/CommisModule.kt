@@ -10,7 +10,7 @@ import kotlin.concurrent.timer
 import kotlin.math.floor
 
 @ModuleID("commis")
-class CommisModule() : ListenerModule() {
+class CommisModule : ListenerModule() {
 	override val name = "commis"
 
 	@SlashCommand("starts commissions",
