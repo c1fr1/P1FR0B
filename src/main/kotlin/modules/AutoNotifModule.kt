@@ -8,6 +8,7 @@ import bot.modules.ListenerModule
 import bot.modules.ModuleID
 import java.net.InetAddress
 import java.net.ServerSocket
+import java.net.SocketException
 import kotlin.concurrent.thread
 
 @ModuleID("Automatic Notification Server")
@@ -37,21 +38,27 @@ class AutoNotifModule(val port : Int = 4730) : ListenerModule() {
 						Logger.verbose("failed to connect")
 						continue
 					}
-					val messageString = String(conn.getInputStream().readAllBytes())
-					val userSnowflake = messageString.substringBefore("|")
-					val sourceId = messageString.substringAfter("|").substringBefore(":")
-					val message = messageString.substringAfter(":")
-					val formattedMessage = "${message}\n\nmessage was sent from `${sourceId}`"
-					getBot().jda.getUserById(userSnowflake)?.openPrivateChannel()?.complete()
-						?.sendMessage(formattedMessage)?.complete() ?: Logger.warn(
-						"failed to send message, target: $userSnowflake | source ID: $sourceId, : message: $message"
-					)
+					try {
+						val messageString = String(conn.getInputStream().readAllBytes())
+						val userSnowflake = messageString.substringBefore("|")
+						val sourceId = messageString.substringAfter("|").substringBefore(":")
+						val message = messageString.substringAfter(":")
+						val formattedMessage = "${message}\n\nmessage was sent from `${sourceId}`"
+						getBot().jda.getUserById(userSnowflake)?.openPrivateChannel()?.complete()
+							?.sendMessage(formattedMessage)?.complete() ?: Logger.warn(
+							"failed to send message, target: $userSnowflake | source ID: $sourceId, : message: $message"
+						)
+					} catch (e : SocketException) {
+						Logger.warn("Socket error thrown when receiving message from ${conn.inetAddress}")
+					} catch (e : Throwable) {
+						Logger.warn("Unknown error thrown when receiving message from ${conn.inetAddress}")
+						Logger.logError(e)
+					}
 				}
 			} catch (e : Throwable) {
 				Logger.error("auto notif server thread threw an error")
 				Logger.logError(e)
 			}
-			Logger.error("server thread closed, thread is $serverThread, socket is $socket")
 		}
 	}
 
