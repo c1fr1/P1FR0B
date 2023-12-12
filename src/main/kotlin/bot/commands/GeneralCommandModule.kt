@@ -61,7 +61,7 @@ class GeneralCommandModule : ListenerModule() {
 				event.reply("you do not have permission to use this command").setEphemeral(true).complete()
 				return
 			}
-			Logger.verbose("executing command ${command.functionName} for ${event.member?.nickname}")
+			Logger.verbose("executing command ${command.functionName} for ${event.user.name}")
 			command.function(event, getBot(event))
 		}
 	}
