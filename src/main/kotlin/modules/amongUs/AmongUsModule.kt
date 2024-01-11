@@ -42,9 +42,10 @@ class AmongUsModule(val tcTarget : String) : ListenerModule() {
 
 	override fun onMessageReceived(event : MessageReceivedEvent) {
 		if (event.channel.id == tcTarget) {
-			if (event.message.contentRaw.length == 6 &&
-					event.message.contentRaw.all {it.isLetter()}) {
-				setCode(event.message.contentRaw, event.member!!)
+			val message = event.channel.retrieveMessageById(event.messageId).complete()
+			if (message.contentRaw.length == 6 &&
+					message.contentRaw.all {it.isLetter()}) {
+				setCode(message.contentRaw, event.member!!)
 			}
 		}
 	}

@@ -33,7 +33,8 @@ class ResponseModule(private val basePath : String = "resources/responses/",
 
 	override fun onMessageReceived(event : MessageReceivedEvent) {
 		if (event.author.isBot) return
-		val entry = getRandomEntry(event.message.contentRaw)
+		val message = event.channel.retrieveMessageById(event.messageId).complete()
+		val entry = getRandomEntry(message.contentRaw)
 		if (entry != null && !blackListed.any {it == entry.simpleText }) {
 			event.channel.sendFiles(
 				FileUpload.fromData(File(entry.path(basePath)), "${entry.heroName}${entry.id}.mp3")
