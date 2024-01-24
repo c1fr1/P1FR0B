@@ -6,6 +6,7 @@ import bot.modules.ListenerModule
 import bot.modules.ModuleID
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
+import net.dv8tion.jda.api.utils.AttachedFile
 import net.dv8tion.jda.api.utils.FileUpload
 import net.dv8tion.jda.api.utils.messages.MessageEditData
 import java.io.File
@@ -100,7 +101,7 @@ class ResponseModule(private val basePath : String = "resources/responses/",
 		}
 		val ret = retList.map { "${it.heroName} ${it.id} : ${it.simpleText}" }.reduce {acc, line -> "$acc\n$line"}
 		if (ret.length >= 2000) {
-			reply.editOriginal(MessageEditData.fromFiles(FileUpload.fromData(ret.toByteArray(), "responses.txt")))
+			reply.editOriginalAttachments(AttachedFile.fromData(ret.toByteArray(), "responses.txt"))
 		} else {
 			reply.editOriginal(ret).complete()
 		}
