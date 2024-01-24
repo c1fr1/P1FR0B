@@ -101,7 +101,7 @@ class ResponseModule(private val basePath : String = "resources/responses/",
 		}
 		val ret = retList.map { "${it.heroName} ${it.id} : ${it.simpleText}" }.reduce {acc, line -> "$acc\n$line"}
 		if (ret.length >= 2000) {
-			reply.editOriginalAttachments(AttachedFile.fromData(ret.toByteArray(), "responses.txt"))
+			reply.editOriginal(MessageEditData.fromFiles(FileUpload.fromData(ret.toByteArray(), "responses.txt"))).complete()
 		} else {
 			reply.editOriginal(ret).complete()
 		}
