@@ -15,7 +15,7 @@ import java.lang.Exception
 @ModuleID("React")
 class ReactModule : ListenerModule() {
 
-	override val name = "Wiggle"
+	override val name = "React"
 
 	/*override fun onStartup(bot: Bot): Boolean {
 		val dotaChannel = bot.getGuild().textChannels.find { it.name == "dota" }!!
