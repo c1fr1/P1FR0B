@@ -1,17 +1,61 @@
 package bot.storage
 
-import bot.Logger
-import com.google.gson.*
-import java.io.FileInputStream
-import java.io.OutputStreamWriter
-import java.nio.file.Path
-import java.util.concurrent.Executors
+import java.io.File
 import kotlin.io.path.Path
-import kotlin.io.path.extension
-import kotlin.io.path.nameWithoutExtension
-import kotlin.system.exitProcess
+import kotlin.io.path.absolutePathString
+import kotlin.io.path.createDirectories
+import kotlin.io.path.pathString
 
-abstract class Storage<StorageObject> {
+inline fun <reified Data>createStorage(
+	fileName: String,
+	crossinline readData: (file: File) -> Data,
+	crossinline writeData: (file: File, data: Data) -> Unit,
+	crossinline writePlaceholder: (file: File) -> Unit = { },
+	crossinline createDefault: () -> Data? = { null }
+): Storage<Data> {
+	val path = Path("resources/modules/").resolve(fileName)
+	val errorName = "${Data::class.simpleName} (${path.pathString})"
+
+	return object : Storage<Data>() {
+		override fun load(): Data {
+			val file = File(path.absolutePathString())
+
+			if (file.isDirectory) {
+				file.deleteRecursively()
+			}
+
+			if (!file.exists()) {
+				path.parent.createDirectories()
+
+				println("missing file for $errorName")
+
+				val default = createDefault()
+
+				if (default != null) {
+					writeData(file, default)
+					return default
+				} else {
+					writePlaceholder(file)
+					throw Exception("could not load data for $errorName")
+				}
+			}
+
+			return readData(file)
+		}
+
+		override fun save(data: Data) {
+			path.parent.createDirectories()
+			writeData(path.toFile(), data)
+		}
+	}
+}
+
+abstract class Storage<Data> {
+	abstract fun load(): Data
+	abstract fun save(data: Data)
+}
+
+/*abstract class Storage<StorageObject> {
 	companion object {
 		/* only one storage file can be written at a time */
 		private val pool = Executors.newFixedThreadPool(1)
@@ -125,4 +169,4 @@ inline fun <reified Type> GsonBuilder.smartRegisterType(
 	})
 
 	return this
-}
+}*/

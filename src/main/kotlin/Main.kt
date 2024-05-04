@@ -5,6 +5,7 @@ import modules.*
 import modules.amongUs.AmongUsModule
 import modules.dota.ResponseModule
 import modules.moduleManager.ModuleManagerModule
+import modules.nyt.NYTModule
 import modules.voiceChannel.VCModule
 import java.io.FileReader
 import kotlin.io.path.ExperimentalPathApi
@@ -40,6 +41,7 @@ fun main(args: Array<String>) {
 		bot.addModule { CommisModule() }
 		bot.addModule { AutoNotifModule() }
 		bot.addModule { ReactModule() }
+		bot.addModule { NYTModule() }
 
 		bot.startup()
 	} catch (e : Throwable) {

@@ -6,9 +6,6 @@ import bot.commands.SlashCommand
 import bot.modules.ListenerModule
 import bot.modules.ModuleID
 import bot.storage.createStorage
-import bot.storage.smartRegisterType
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonPrimitive
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.User
@@ -22,19 +19,26 @@ import java.time.ZoneId
 @ModuleID("pleasure")
 class PleasureModule(private val allowSelfPleasure: Boolean) : ListenerModule() {
 	override val name = "pleasure"
-
-	data class PleasureEntry(val from: Long, val to: Long, val time: Instant)
-	data class PleasureLog(val log: ArrayList<PleasureEntry>, val latest: HashMap<Long, Instant>)
+	data class PleasureLog(val latest: HashMap<Long, Instant>)
 
 	private val storage = createStorage(
-		"pleasure.json",
-		GsonBuilder().setPrettyPrinting().serializeNulls()
-			.smartRegisterType<Instant>(
-				{ instant -> JsonPrimitive(instant.toEpochMilli()) },
-				{ json -> Instant.ofEpochMilli(json.asLong) }
-			)
-			.create(),
-	) { PleasureLog(ArrayList(), HashMap()) }
+		"pleasure.txt",
+		readData = {
+			val ret = HashMap<Long, Instant>()
+			val lines = it.readLines()
+			for (line in lines) {
+				val (sender, time) = line.split(":")
+				ret[sender.toLong()] = Instant.ofEpochSecond(time.toLong())
+			}
+			ret
+		},
+		writeData = {file, entries ->
+			for ((sender, time) in entries) {
+				file.writeText("$sender:${time.epochSecond}\n")
+			}
+		},
+		createDefault = { HashMap() }
+	)
 
 	override fun onStartup(bot: Bot): Boolean {
 		storage.load()
@@ -47,7 +51,7 @@ class PleasureModule(private val allowSelfPleasure: Boolean) : ListenerModule() 
 	private fun canSend(userId: Long): Boolean {
 		val log = storage.load()
 
-		val latest = log.latest[userId] ?: return true
+		val latest = log[userId] ?: return true
 
 		/* latest is on a previous day */
 		return LocalDate.ofInstant(latest, ZoneId.systemDefault()) < LocalDate.now()
@@ -58,9 +62,8 @@ class PleasureModule(private val allowSelfPleasure: Boolean) : ListenerModule() 
 
 		val now = Instant.now()
 
-		log.log.add(PleasureEntry(from, to, now))
-		log.latest[from] = now
-		storage.save()
+		log[from] = now
+		storage.save(log)
 	}
 
 	private fun doPleasure(channel: PrivateChannel, fromName: String?): RestAction<MutableList<Message>> {
