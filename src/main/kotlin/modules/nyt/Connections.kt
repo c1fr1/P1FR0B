@@ -16,7 +16,14 @@ object Connections {
 	private val roleID = IDS["NYT_GAMES_ROLE"]!!
 
 	fun handleMessage(message: Message) {
-		val member = message.member ?: return
+		val userID = (message.member ?: return).id
+		val summary = message.contentRaw
+
+		handleGameSubmission(userID, summary, message)
+	}
+
+	fun handleGameSubmission(userID : String, summary : String, message : Message) {
+		val member = message.guild.getMemberById(userID) ?: return
 		val game = Game.parse(message) ?: return
 		val gameDay = dateFromNumber(game.puzzleNumber)
 		val today = LocalDate.now()

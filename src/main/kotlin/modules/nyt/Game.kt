@@ -55,9 +55,8 @@ data class Game(val puzzleNumber: Int) {
 			return ParseResult(index, if (numSquareLines >= 4) puzzleNumber else null)
 		}
 
-		fun parse(message: Message): Game? {
-			val text = message.contentRaw
-
+		fun parse(message : Message) = parse(message.contentRaw)
+		fun parse(text : String): Game? {
 			val lines = text.lines()
 
 			var index = 0

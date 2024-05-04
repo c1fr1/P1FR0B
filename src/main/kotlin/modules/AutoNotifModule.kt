@@ -12,15 +12,15 @@ import java.net.SocketException
 import kotlin.concurrent.thread
 
 @ModuleID("Automatic Notification Server")
-class AutoNotifModule(val port : Int = 4730) : ListenerModule() {
+class AutoNotifModule(val port : Int = IDS["NOTIF_SERVER_PORT"]!!.toInt()) : ListenerModule() {
 	override val name : String = "Automatic Notification Server"
-	var socket : ServerSocket? = null
 
+	var socket : ServerSocket? = null
 	var serverThread : Thread? = null
 
 	override fun onStartup(bot : Bot) : Boolean {
 		val address = IDS["NOTIF_SERVER_ADDRESS"].let { InetAddress.getByName(it) } ?: InetAddress.getLocalHost()
-		socket = ServerSocket(4730, 50, address)
+		socket = ServerSocket(port, 50, address)
 		Logger.verbose("socket addr: ${socket?.localSocketAddress}")
 		startServerThread()
 
