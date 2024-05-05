@@ -33,9 +33,7 @@ class PleasureModule(private val allowSelfPleasure: Boolean) : ListenerModule() 
 			ret
 		},
 		writeData = {file, entries ->
-			for ((sender, time) in entries) {
-				file.writeText("$sender:${time.epochSecond}\n")
-			}
+			file.writeText(entries.map {(sender, time) -> "$sender:${time.epochSecond}"}.joinToString("\n"))
 		},
 		createDefault = { HashMap() }
 	)
