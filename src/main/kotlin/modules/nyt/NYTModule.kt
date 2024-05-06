@@ -5,6 +5,7 @@ import bot.IDS
 import bot.Logger
 import bot.modules.ListenerModule
 import bot.modules.ModuleID
+import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder
 import net.dv8tion.jda.api.utils.messages.MessageCreateData
@@ -42,9 +43,11 @@ class NYTModule : ListenerModule() {
 	fun sendGame(userID : String, gameSummary : String) {
 		val channel = getBot().getGuild().getTextChannelById(IDS["NYT_GAMES_CHANNEL"]!!)
 			?: throw RuntimeException("unable to find NYT Games channel")
-		val messageBuilder = SilentMessageDataBuilder()
-		messageBuilder.addContent("game summary from <@$userID>\n$gameSummary")
-		messageBuilder.allowedMentions.clear()
+		val messageBuilder = MessageCreateBuilder()
+		val embedBuilder = EmbedBuilder()
+		embedBuilder.setDescription("game summary from <@$userID\n$gameSummary")
+		getBot().jda.getUserById(userID)?.let { embedBuilder.setThumbnail(it.avatarUrl) }
+		messageBuilder.addEmbeds(embedBuilder.build())
 		val message = channel.sendMessage(messageBuilder.build()).complete()
 		Connections.handleGameSubmission(userID, gameSummary, message)
 	}
@@ -79,12 +82,5 @@ class NYTModule : ListenerModule() {
 				Logger.logError(e)
 			}
 		}
-	}
-}
-
-class SilentMessageDataBuilder : MessageCreateBuilder() {
-	override fun build(): MessageCreateData {
-		messageFlags = messageFlags or 4096
-		return super.build()
 	}
 }
