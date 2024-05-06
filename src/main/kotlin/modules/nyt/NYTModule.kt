@@ -45,7 +45,7 @@ class NYTModule : ListenerModule() {
 			?: throw RuntimeException("unable to find NYT Games channel")
 		val messageBuilder = MessageCreateBuilder()
 		val embedBuilder = EmbedBuilder()
-		embedBuilder.setDescription("game summary from <@$userID\n$gameSummary")
+		embedBuilder.setDescription("game summary from <@$userID>\n$gameSummary")
 		getBot().jda.getUserById(userID)?.let { embedBuilder.setThumbnail(it.avatarUrl) }
 		messageBuilder.addEmbeds(embedBuilder.build())
 		val message = channel.sendMessage(messageBuilder.build()).complete()
