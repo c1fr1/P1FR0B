@@ -6,9 +6,9 @@ import bot.Logger
 import bot.modules.ListenerModule
 import bot.modules.ModuleID
 import net.dv8tion.jda.api.EmbedBuilder
+import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder
-import net.dv8tion.jda.api.utils.messages.MessageCreateData
 import java.lang.RuntimeException
 import java.net.InetAddress
 import java.net.ServerSocket
@@ -21,6 +21,11 @@ class NYTModule : ListenerModule() {
 
 	var socket : ServerSocket? = null
 	var serverThread : Thread? = null
+
+	val gameHandlers = arrayOf(
+		ConnectionsGameHandler(),
+		WordleGameHandler()
+	)
 
 	override fun onStartup(bot : Bot) : Boolean {
 		try {
@@ -37,7 +42,10 @@ class NYTModule : ListenerModule() {
 	override fun onMessageReceived(event: MessageReceivedEvent) {
 		if (event.author.isBot) return
 		val message = event.channel.retrieveMessageById(event.messageId).complete()
-		Connections.handleMessage(message)
+		val userID = (message.member ?: return).id
+		val summary = message.contentRaw
+
+		messageHandlers(userID, summary, message)
 	}
 
 	fun sendGame(userID : String, gameSummary : String) {
@@ -49,7 +57,13 @@ class NYTModule : ListenerModule() {
 		getBot().jda.getUserById(userID)?.let { embedBuilder.setThumbnail(it.avatarUrl) }
 		messageBuilder.addEmbeds(embedBuilder.build())
 		val message = channel.sendMessage(messageBuilder.build()).complete()
-		Connections.handleGameSubmission(userID, gameSummary, message)
+		messageHandlers(userID, gameSummary, message)
+	}
+
+	fun messageHandlers(userID: String, gameSummary: String, message : Message) {
+		for (handler in gameHandlers) {
+			handler.handleGameSubmission(userID, gameSummary, message)
+		}
 	}
 
 	fun startServerThread() {
