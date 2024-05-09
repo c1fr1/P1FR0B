@@ -31,7 +31,7 @@ class ConnectionsGameHandler : NYTGameHandler<ConnectionsPerformanceData>() {
 	override fun updateGameHistory(user: Member, summary: String): Int? {
 		val simplified = summary.lines().map { it.trim() }.joinToString("\n")
 		if (!simplified.contains("Connections\nPuzzle #")) return null
-		val start = summary.substringAfter("Connections\nPuzzle #")
+		val start = simplified.substringAfter("Connections\nPuzzle #")
 		val (gameNumStr, linesStart) = start.takeDelimited("\n")
 		val gameNum = gameNumStr.replace(",", "").toIntOrNull() ?: return null
 		if (!isGameNumber(gameNum)) return null
