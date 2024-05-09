@@ -32,9 +32,9 @@ abstract class NYTGameHandler<T : PerformanceData> {
 			}
 		}
 		if (countSubmitted == countActive) {
-			message.reply("All active members has submitted $gameName #$gameNum, you are free to discuss without spoilers")
+			message.reply("All active members has submitted $gameName #$gameNum, you are free to discuss without spoilers").mentionRepliedUser(false).complete()
 		} else {
-			message.reply("$countSubmitted/$countActive have submitted $gameName #$gameNum")
+			message.reply("$countSubmitted/$countActive have submitted $gameName #$gameNum").mentionRepliedUser(false).complete()
 		}
 		storage.save(playerHistories)
 	}

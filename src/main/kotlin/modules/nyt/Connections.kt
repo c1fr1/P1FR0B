@@ -1,6 +1,5 @@
 package modules.nyt
 
-import bot.storage.Storage
 import net.dv8tion.jda.api.entities.Member
 
 
@@ -10,7 +9,7 @@ class ConnectionsPerformanceData(
 
 	companion object {
 		val parse : (String) -> ConnectionsPerformanceData = {s ->
-			val counts = s.split(",").map { it.toInt() }
+			val counts = s.split(",").map { it.trim().toInt() }
 			val ret = ConnectionsPerformanceData()
 			repeat(24) {i ->
 				ret.distribution[i / 5][i % 5] = counts[i]
@@ -24,10 +23,10 @@ class ConnectionsPerformanceData(
 
 class ConnectionsGameHandler : NYTGameHandler<ConnectionsPerformanceData>() {
 	override val gameName: String = "Connections"
+	override val loadPerformanceData: (String) -> ConnectionsPerformanceData = ConnectionsPerformanceData.parse
 	override val storage = loadStorage()
 	override val playerHistories = storage.load()
 	override val referenceNumber: Int = 332
-	override val loadPerformanceData: (String) -> ConnectionsPerformanceData = ConnectionsPerformanceData.parse
 
 	override fun updateGameHistory(user: Member, summary: String): Int? {
 		val simplified = summary.lines().map { it.trim() }.joinToString("\n")
@@ -39,12 +38,14 @@ class ConnectionsGameHandler : NYTGameHandler<ConnectionsPerformanceData>() {
 
 		var numCorrect = 0
 		var numIncorrect = 0
-		val validSquares = "🟨🟩🟦🟪"
+		val validSquares = "🟨🟩🟦🟪".replace("\uD83D", "")
 		var (currentLine, remaining) = linesStart.takeDelimited("\n")
 		while (numCorrect < 4 && numIncorrect < 4) {
+			if (currentLine.length != 8) return null
+			currentLine = currentLine.replace("\uD83D", "")
 			if (currentLine.length != 4 || currentLine.any { it !in validSquares }) return null
-			val first = validSquares[0]
-			if (validSquares.any { it != first }) ++numIncorrect else ++numCorrect
+			val first = currentLine[0]
+			if (currentLine.any { it != first }) ++numIncorrect else ++numCorrect
 			val pair = remaining.takeDelimited("\n")
 			currentLine = pair.first
 			remaining = pair.second

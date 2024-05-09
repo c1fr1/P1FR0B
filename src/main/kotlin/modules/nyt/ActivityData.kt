@@ -58,7 +58,7 @@ class ActivityData<T : PerformanceData> (
 	}
 
 	fun savableString() : String {
-		val participationRep = recentParticipation.joinToString { if (it) "y" else "n" }
+		val participationRep = recentParticipation.joinToString("") { if (it) "y" else "n" }
 		val spoilerOverrideRep = overrideSpoilersAllowed?.let { if (it) "y" else "n" } ?: "?"
 		val performanceDataRep = performanceData.savableString()
 		return "$lastUpdatedNumber,$participationRep,$spoilerOverrideRep,$performanceDataRep"
@@ -70,5 +70,5 @@ interface PerformanceData {
 	fun savableString() : String
 }
 
-//TODO move this somewhere sensicle
-fun String.takeDelimited(delimiter : String = ",") : Pair<String, String> = Pair(substringBefore(delimiter), substringAfter(delimiter))
+//TODO move this somewhere sensible
+fun String.takeDelimited(delimiter : String = ",") : Pair<String, String> = Pair(substringBefore(delimiter), if (delimiter in this) substringAfter(delimiter) else "")

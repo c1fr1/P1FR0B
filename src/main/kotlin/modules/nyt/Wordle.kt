@@ -22,10 +22,10 @@ class WordlePerformanceData(
 }
 class WordleGameHandler : NYTGameHandler<WordlePerformanceData>() {
 	override val gameName: String = "Wordle"
+	override val loadPerformanceData: (String) -> WordlePerformanceData = WordlePerformanceData.parse
 	override val storage = loadStorage()
 	override val playerHistories = storage.load()
 	override val referenceNumber: Int = 1054
-	override val loadPerformanceData: (String) -> WordlePerformanceData = WordlePerformanceData.parse
 
 	override fun updateGameHistory(user: Member, summary: String): Int? {
 		val simplified = summary.lines().map { it.trim() }.joinToString("\n")
@@ -42,8 +42,9 @@ class WordleGameHandler : NYTGameHandler<WordlePerformanceData>() {
 		val expectedLines = min(guessesTaken, 6)
 
 		var (currentLine, remaining) = squares.takeDelimited("\n")
-		val validSquares = "⬛⬜🟨🟩"
+		val validSquares = "⬛⬜🟨🟩".replace("\uD83D", "")
 		repeat (expectedLines) {
+			currentLine = currentLine.replace("\uD83D", "")
 			if (currentLine.length != 5 || currentLine.any { it !in validSquares }) return null
 			val pair = remaining.takeDelimited("\n")
 			currentLine = pair.first
