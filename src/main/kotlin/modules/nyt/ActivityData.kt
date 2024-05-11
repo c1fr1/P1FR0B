@@ -25,17 +25,18 @@ class ActivityData<T : PerformanceData> (
 			)
 		}
 	}
-	fun updateParticipation(currentNumber : Int, completedToday : Boolean = false) : Int {
+	fun updateParticipation(currentNumber : Int, completedToday : Boolean = false) : ActivityData<T> {
 		val offset = if (completedToday) currentNumber - lastUpdatedNumber else currentNumber - lastUpdatedNumber - 1
-		if (offset <= 0) return recentParticipation.count { it }
+		if (offset <= 0) return this
 		repeat(max(7 - offset, 0)) { i ->
-			recentParticipation[6 - i] = recentParticipation[5 - i]
+			recentParticipation[6 - i] = recentParticipation[6 - i - offset]
 		}
 		repeat(offset) {i ->
 			recentParticipation[i] = false
 		}
 		if (completedToday) recentParticipation[0] = true
-		return recentParticipation.count { it }
+		lastUpdatedNumber = if (completedToday) currentNumber else currentNumber - 1
+		return this
 	}
 
 	fun setSubmitted(gameNumber : Int) {
@@ -48,7 +49,7 @@ class ActivityData<T : PerformanceData> (
 	}
 
 	fun avoidsSpoilers(currentNumber : Int) : Boolean {
-		return overrideSpoilersAllowed ?: (updateParticipation(currentNumber) >= 4)
+		return overrideSpoilersAllowed ?: (updateParticipation(currentNumber).recentParticipation.count { it } >= 4)
 	}
 
 	fun hasSubmitted(number : Int) : Boolean {

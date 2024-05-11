@@ -24,7 +24,7 @@ abstract class NYTGameHandler<T : PerformanceData> {
 		val member = message.guild.getMemberById(userID) ?: return
 		val gameNum = updateGameHistory(member, summary) ?: return
 		val memberHistory = playerHistories[member.idLong]!!
-		val activityString = memberHistory.recentParticipation.map { if (it) "🟩" else "⬛" }
+		val activityString = memberHistory.recentParticipation.joinToString("") { if (it) "🟩" else "⬛" }
 		val participationIntro = "recent participation for $gameName: $activityString"
 		if (playerHistories[member.idLong]?.avoidsSpoilers(gameNum) == true) {
 			var countSubmitted = 0
@@ -48,9 +48,9 @@ abstract class NYTGameHandler<T : PerformanceData> {
 			if (memberHistory.overrideSpoilersAllowed == false) {
 				message.reply(participationIntro).mentionRepliedUser(false).complete()
 			} else {
-				val recentActive = memberHistory.recentParticipation.count { it }
+				val remainingRequirement = 4 - memberHistory.recentParticipation.count { it }
 				message.reply("$participationIntro\n" +
-						"complete $recentActive more to be considered active\n")
+						"complete $remainingRequirement more to be considered active\n")
 					.mentionRepliedUser(false).complete()
 			}
 		}
