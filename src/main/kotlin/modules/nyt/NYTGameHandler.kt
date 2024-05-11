@@ -23,18 +23,36 @@ abstract class NYTGameHandler<T : PerformanceData> {
 	fun handleGameSubmission(userID : String, summary : String, message : Message) {
 		val member = message.guild.getMemberById(userID) ?: return
 		val gameNum = updateGameHistory(member, summary) ?: return
-		var countSubmitted = 0
-		var countActive = 0
-		for ((_, history) in playerHistories) {
-			if (history.avoidsSpoilers(gameNum)) {
-				++countActive
-				if (history.hasSubmitted(gameNum)) ++countSubmitted
+		val memberHistory = playerHistories[member.idLong]!!
+		val activityString = memberHistory.recentParticipation.map { if (it) "🟩" else "⬛" }
+		val participationIntro = "recent participation for $gameName: $activityString"
+		if (playerHistories[member.idLong]?.avoidsSpoilers(gameNum) == true) {
+			var countSubmitted = 0
+			var countActive = 0
+			for ((_, history) in playerHistories) {
+				if (history.avoidsSpoilers(gameNum)) {
+					++countActive
+					if (history.hasSubmitted(gameNum)) ++countSubmitted
+				}
 			}
-		}
-		if (countSubmitted == countActive) {
-			message.reply("All active members has submitted $gameName #$gameNum, you are free to discuss without spoilers").mentionRepliedUser(false).complete()
+			if (countSubmitted == countActive) {
+				message.reply("$participationIntro\n" +
+						"All active members has submitted $gameName #$gameNum, you are free to discuss without spoilers")
+					.mentionRepliedUser(false).complete()
+			} else {
+				message.reply("$participationIntro\n" +
+						"$countSubmitted/$countActive have submitted $gameName #$gameNum")
+					.mentionRepliedUser(false).complete()
+			}
 		} else {
-			message.reply("$countSubmitted/$countActive have submitted $gameName #$gameNum").mentionRepliedUser(false).complete()
+			if (memberHistory.overrideSpoilersAllowed == false) {
+				message.reply(participationIntro).mentionRepliedUser(false).complete()
+			} else {
+				val recentActive = memberHistory.recentParticipation.count { it }
+				message.reply("$participationIntro\n" +
+						"complete $recentActive more to be considered active\n")
+					.mentionRepliedUser(false).complete()
+			}
 		}
 		storage.save(playerHistories)
 	}
