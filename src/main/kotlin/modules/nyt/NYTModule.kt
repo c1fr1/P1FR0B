@@ -15,9 +15,9 @@ import java.net.ServerSocket
 import java.net.SocketException
 import kotlin.concurrent.thread
 
-@ModuleID("New York Times Module")
+@ModuleID("NYT Games")
 class NYTModule : ListenerModule() {
-	override val name : String = "New York Times Module"
+	override val name : String = "NYT Games"
 
 	var socket : ServerSocket? = null
 	var serverThread : Thread? = null

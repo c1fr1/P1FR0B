@@ -19,7 +19,7 @@ class AutoNotifModule(val port : Int = IDS["NOTIF_SERVER_PORT"]!!.toInt()) : Lis
 	var serverThread : Thread? = null
 
 	override fun onStartup(bot : Bot) : Boolean {
-		val address = IDS["NOTIF_SERVER_ADDRESS"].let { InetAddress.getByName(it) } ?: InetAddress.getLocalHost()
+		val address = IDS["SERVER_ADDRESS"].let { InetAddress.getByName(it) } ?: InetAddress.getLocalHost()
 		socket = ServerSocket(port, 50, address)
 		Logger.verbose("socket addr: ${socket?.localSocketAddress}")
 		startServerThread()
