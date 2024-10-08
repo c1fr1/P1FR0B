@@ -25,14 +25,14 @@ class VCModule(private val roleId : String, private val vcChannelID : String) : 
 
 	private fun clearMessageHistory(e : GenericGuildEvent) {
 		val tc = e.guild.getTextChannelById(vcChannelID) ?: return
-		var messages = tc.history.retrievePast(50).complete()
+		var messages = tc.history.retrievePast(99).complete()
 		while (messages.size > 0) {
 			if (messages.size == 1) {
 				tc.deleteMessageById(messages[0].id).complete()
 			} else {
 				tc.deleteMessages(messages).complete()
 			}
-			messages = tc.history.retrievePast(50).complete()
+			messages = tc.history.retrievePast(99).complete()
 		}
 		for (threadChannel in tc.threadChannels) {
 			threadChannel.delete().complete()

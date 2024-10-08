@@ -57,9 +57,9 @@ class WordleGameHandler : NYTGameHandler<WordlePerformanceData>() {
 		val history = playerHistories[user.idLong]!!
 		history.setSubmitted(gameNum)
 		if (isHardMode) {
-			history.performanceData.hardmodeGuessDistribution[guessesTaken]++
+			history.performanceData.hardmodeGuessDistribution[guessesTaken % 7]++
 		} else {
-			history.performanceData.guessDistribution[guessesTaken]++
+			history.performanceData.guessDistribution[guessesTaken % 7]++
 		}
 		return gameNum
 	}

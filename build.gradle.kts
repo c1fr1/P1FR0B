@@ -1,6 +1,4 @@
 
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 buildscript {
 	repositories {
 		mavenCentral()
@@ -32,9 +30,6 @@ dependencies {
 	implementation(kotlin("stdlib-jdk8"))
 }
 
-tasks.withType<KotlinCompile> {
-	kotlinOptions.jvmTarget = "1.8"
-}
 tasks.withType<JavaCompile> {
 	targetCompatibility = "1.8"
 }
