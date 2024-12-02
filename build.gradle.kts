@@ -10,6 +10,7 @@ buildscript {
 
 plugins {
 	kotlin("jvm") version "1.9.22"
+	kotlin("plugin.serialization") version "1.9.22"
 	application
 	id("com.github.johnrengelman.shadow") version "7.1.0"
 }
@@ -23,6 +24,7 @@ application {
 }
 
 dependencies {
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 	implementation("org.jetbrains.kotlin", "kotlin-reflect", "1.6.21")
 	implementation("org.reflections", "reflections", "0.9.11")
 	implementation("org.slf4j", "slf4j-nop", "1.7.36")
