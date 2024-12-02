@@ -1,5 +1,6 @@
 package modules
 
+import bot.Logger
 import bot.commands.SlashCommand
 import bot.modules.ListenerModule
 import bot.modules.ModuleID
@@ -18,6 +19,7 @@ class MCTriviaModule : ListenerModule(), ContactableModule {
 	override fun receiveMessage(message : String) : String? {
 		val functionID = message.substringBefore("|")
 		val body = message.substringAfter("|")
+		Logger.verbose("received trivia call $functionID")
 		return when (functionID) {
 			"LinkUser" -> {
 				val options = getBot().getGuild().members.filter { it.effectiveName.lowercase() == body.lowercase() }
@@ -71,7 +73,7 @@ class MCTriviaModule : ListenerModule(), ContactableModule {
 	}
 
 	@SlashCommand("Cleans up voice channels created by this module", "Cleans up voice channels created by this module")
-	fun endMCTrivia() : String {
+	fun endMcTrivia() : String {
 		val lobbyVC = findLobbyVC()
 		for (vc in teamVCs) {
 			for (member in vc.members) {

@@ -43,6 +43,7 @@ class ModuleCommunicatorModule(val port : Int = IDS["MODULE_COMMUNICATOR_PORT"]!
 						val messageString = String(conn.getInputStream().readAllBytes())
 						val targetModuleID = messageString.substringBefore("|").lowercase().replace(" ", "-")
 						val payload = messageString.substringAfter("|")
+						Logger.verbose("received message for $targetModuleID")
 						getBot().getModules().firstOrNull { it.id == targetModuleID }?.let { targetModule ->
 							if (targetModule is ContactableModule) {
 								targetModule.receiveMessage(payload)?.let { response ->
