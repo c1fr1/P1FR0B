@@ -59,10 +59,10 @@ class MCTriviaModule : ListenerModule(), ContactableModule {
 	fun getVoiceChannel(teamName : String) : VoiceChannel {
 		val targetVoiceChannelName = "Team $teamName"
 		return teamVCs.firstOrNull { it.name == targetVoiceChannelName }
-			?: getBot().getGuild().createVoiceChannel(targetVoiceChannelName, getLobbyVC().parentCategory).complete()
+			?: getBot().getGuild().createVoiceChannel(targetVoiceChannelName, findLobbyVC().parentCategory).complete()
 	}
 
-	fun getLobbyVC() : VoiceChannel {
+	fun findLobbyVC() : VoiceChannel {
 		val ret = lobbyVC
 			?: getBot().getGuild().voiceChannels.filter { it.members.size > 0 && !teamVCs.contains(it) }.maxByOrNull { it.members.size }
 			?: getBot().getGuild().voiceChannels.first()
@@ -72,7 +72,7 @@ class MCTriviaModule : ListenerModule(), ContactableModule {
 
 	@SlashCommand("", "")
 	fun endMCTrivia() : String {
-		val lobbyVC = getLobbyVC()
+		val lobbyVC = findLobbyVC()
 		for (vc in teamVCs) {
 			for (member in vc.members) {
 				lobbyVC.guild.moveVoiceMember(member, lobbyVC).queue()
