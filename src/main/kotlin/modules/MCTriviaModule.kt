@@ -70,7 +70,7 @@ class MCTriviaModule : ListenerModule(), ContactableModule {
 		return ret
 	}
 
-	@SlashCommand("", "")
+	@SlashCommand("Cleans up voice channels created by this module", "Cleans up voice channels created by this module")
 	fun endMCTrivia() : String {
 		val lobbyVC = findLobbyVC()
 		for (vc in teamVCs) {
@@ -80,6 +80,7 @@ class MCTriviaModule : ListenerModule(), ContactableModule {
 			vc.delete().complete()
 		}
 		teamVCs.clear()
+		this.lobbyVC = null
 		return "trivia vcs closed"
 	}
 }
