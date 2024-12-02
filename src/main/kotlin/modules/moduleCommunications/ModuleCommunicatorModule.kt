@@ -58,6 +58,7 @@ class ModuleCommunicatorModule(val port : Int = IDS["MODULE_COMMUNICATOR_PORT"]!
 						conn.close()
 					} catch (e : SocketException) {
 						Logger.warn("Socket error thrown when receiving message from ${conn.inetAddress}")
+						Logger.logError(e)
 					} catch (e : Throwable) {
 						Logger.warn("Unknown error thrown when receiving message from ${conn.inetAddress}")
 						Logger.logError(e)
