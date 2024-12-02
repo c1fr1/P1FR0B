@@ -4,6 +4,7 @@ import bot.Logger
 import modules.*
 import modules.amongUs.AmongUsModule
 import modules.dota.ResponseModule
+import modules.moduleCommunications.ModuleCommunicatorModule
 import modules.moduleManager.ModuleManagerModule
 import modules.nyt.NYTModule
 import modules.voiceChannel.VCModule
@@ -19,6 +20,7 @@ fun main(args: Array<String>) {
 	try {
 		val bot = Bot(IDS["DPACK_GUILD"]!!)
 		bot.addModule { ModuleManagerModule() }
+		bot.addModule { ModuleCommunicatorModule() }
 		bot.addModule { ResponseModule() }
 		bot.addModule { AmongUsModule(IDS["AMONG_US_TEXT_CHANNEL"]!!) }
 		bot.addModule { VCModule(IDS["VC_ROLE"]!!, IDS["VC_TEXT_CHANNEL"]!!) }
@@ -42,6 +44,7 @@ fun main(args: Array<String>) {
 		bot.addModule { AutoNotifModule() }
 		bot.addModule { ReactModule() }
 		bot.addModule { NYTModule() }
+		bot.addModule { MCTriviaModule() }
 
 		bot.startup()
 	} catch (e : Throwable) {
