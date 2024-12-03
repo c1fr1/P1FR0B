@@ -7,6 +7,7 @@ import bot.commands.SlashCommand
 import bot.modules.BotModule
 import bot.modules.ListenerModule
 import bot.modules.ModuleID
+import okio.ByteString.Companion.readByteString
 import java.net.InetAddress
 import java.net.ServerSocket
 import java.net.SocketException
@@ -40,7 +41,15 @@ class ModuleCommunicatorModule(val port : Int = IDS["MODULE_COMMUNICATOR_PORT"]!
 						continue
 					}
 					try {
-						val messageString = String(conn.getInputStream().readAllBytes())
+						var offset = 0
+						var messageString = ""
+						while (conn.isConnected) {
+							val availableBytes = conn.getInputStream().readNBytes(conn.getInputStream().available())
+							messageString += String(availableBytes).trimEnd { it == Char.MIN_VALUE }
+							if (availableBytes.last().toInt() == 0) {
+								break
+							}
+						}
 						val targetModuleID = messageString.substringBefore("|").lowercase().replace(" ", "-")
 						val payload = messageString.substringAfter("|")
 						Logger.verbose("received message for $targetModuleID")
