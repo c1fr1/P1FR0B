@@ -35,6 +35,7 @@ class MCTriviaModule : ListenerModule(), ContactableModule {
 
 			"StartRound" -> {
 				val teams = Json.decodeFromString<List<StartRoundObject>>(body)
+				findLobbyVC()
 				for (team in teams) {
 					val members = team.ids.mapNotNull { getBot().getGuild().getMemberById(it) }.filter { member ->
 						getBot().getGuild().voiceChannels.any { it.members.contains(member) }
@@ -49,7 +50,7 @@ class MCTriviaModule : ListenerModule(), ContactableModule {
 			"EndRound" -> {
 				for (vc in teamVCs) {
 					for (member in vc.members) {
-						getBot().getGuild().moveVoiceMember(member, lobbyVC).complete()
+						getBot().getGuild().moveVoiceMember(member, findLobbyVC()).complete()
 					}
 				}
 				null
@@ -77,7 +78,7 @@ class MCTriviaModule : ListenerModule(), ContactableModule {
 		val lobbyVC = findLobbyVC()
 		for (vc in teamVCs) {
 			for (member in vc.members) {
-				lobbyVC.guild.moveVoiceMember(member, lobbyVC).queue()
+				lobbyVC.guild.moveVoiceMember(member, lobbyVC).complete()
 			}
 			vc.delete().complete()
 		}
