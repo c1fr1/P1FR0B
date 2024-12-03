@@ -7,6 +7,7 @@ import bot.commands.SlashCommand
 import bot.modules.BotModule
 import bot.modules.ListenerModule
 import bot.modules.ModuleID
+import okhttp3.internal.wait
 import okio.ByteString.Companion.readByteString
 import java.net.InetAddress
 import java.net.ServerSocket
@@ -44,11 +45,10 @@ class ModuleCommunicatorModule(val port : Int = IDS["MODULE_COMMUNICATOR_PORT"]!
 						var offset = 0
 						var messageString = ""
 						while (conn.isConnected) {
-							val availableBytes = conn.getInputStream().readNBytes(conn.getInputStream().available())
-							messageString += String(availableBytes).trimEnd { it == Char.MIN_VALUE }
-							if (availableBytes.last().toInt() == 0) {
-								break
-							}
+							val nextByte = conn.getInputStream().read()
+							if (nextByte != 0) {
+								messageString += nextByte.toChar()
+							} else break
 						}
 						val targetModuleID = messageString.substringBefore("|").lowercase().replace(" ", "-")
 						val payload = messageString.substringAfter("|")
