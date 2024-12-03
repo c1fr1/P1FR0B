@@ -62,7 +62,11 @@ class MCTriviaModule : ListenerModule(), ContactableModule {
 	fun getVoiceChannel(teamName : String) : VoiceChannel {
 		val targetVoiceChannelName = "Team $teamName"
 		return teamVCs.firstOrNull { it.name == targetVoiceChannelName }
-			?: getBot().getGuild().createVoiceChannel(targetVoiceChannelName, findLobbyVC().parentCategory).complete()
+			?: run {
+				val ret = getBot().getGuild().createVoiceChannel(targetVoiceChannelName, findLobbyVC().parentCategory).complete()
+				teamVCs.add(ret)
+				ret
+			}
 	}
 
 	fun findLobbyVC() : VoiceChannel {
