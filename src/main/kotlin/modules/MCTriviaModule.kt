@@ -59,7 +59,7 @@ class MCTriviaModule : ListenerModule(), ContactableModule {
 				for (participant in discordParticipants) {
 					participant.currentAnswer = null
 					participant.user.openPrivateChannel().queue {
-						it.sendMessage(roundSummary.question)
+						it.sendMessage(roundSummary.question).complete()
 					}
 				}
 				Json.encodeToString(discordParticipants.map { it.team })
