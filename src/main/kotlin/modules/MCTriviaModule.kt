@@ -70,6 +70,11 @@ class MCTriviaModule : ListenerModule(), ContactableModule {
 						getBot().getGuild().moveVoiceMember(member, findLobbyVC()).complete()
 					}
 				}
+				for (participant in discordParticipants) {
+					participant.user.openPrivateChannel().queue {
+						it.sendMessage("Time up!").complete()
+					}
+				}
 				val response = Json.encodeToString(discordParticipants.mapNotNull { it.currentAnswer?.let { ans -> RoundAnswer(it.team, ans)} })
 				for (participant in discordParticipants) {
 					participant.currentAnswer = null
@@ -108,14 +113,13 @@ class MCTriviaModule : ListenerModule(), ContactableModule {
 		}.queue()
 
 		participant.currentAnswer = event.message.contentDisplay
-
 	}
 
 	@SlashCommand("Joins the current game of trivia from discord", "Joins the current game of trivia from discord. You do not need to use this if you are in the minecraft server.")
 	fun joinMcTrivia(e : SlashCommandInteractionEvent, @CMDParam("name of the team you wish to join") teamName : String) : String {
 		discordParticipants.add(TriviaParticipant(e.user, teamName))
 		return "Questions will be dmed to you by the bot, so make sure your dms are open.\n\n" +
-				"To provide an answer, simply send the bot a message with your answer within the time limit. \n\n" +
+				"To provide an answer, simply send the bot a message with your answer within the time limit. If multiple messages are sent only the most recent one is used so you can change your answer. Edits will not be considered.\n\n" +
 				"If you are on a team, only one member of the team needs to provide an answer (either in discord or in the game)."
 	}
 
