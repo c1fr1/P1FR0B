@@ -39,7 +39,6 @@ class MCTriviaModule : ListenerModule(), ContactableModule {
 			"GetNames" -> getBot().getGuild().members.joinToString(",") {
 				it.effectiveName.replace("\\", "\\\\").replace(",", "\\,")
 			}
-
 			"StartRound" -> {
 				val roundSummary = Json.decodeFromString<RoundSummary>(body)
 				findLobbyVC()
@@ -80,6 +79,23 @@ class MCTriviaModule : ListenerModule(), ContactableModule {
 					participant.currentAnswer = null
 				}
 				response
+			}
+			"RenameTeam" -> {
+				val obj = Json.decodeFromString<TeamRenameMessage>(body)
+				for (participant in discordParticipants) {
+					if (participant.team == obj.oldName)
+						participant.team = obj.newName
+				}
+				null
+			}
+			"AddDiscordMembers" -> {
+				val obj = Json.decodeFromString<AddDiscordMembersMessage>(body)
+
+				for (member in obj.discordMembers) {
+					val user = getBot().getGuild().members.firstOrNull {it.effectiveName == member} ?: continue
+					discordParticipants.add(TriviaParticipant(user.user, obj.team))
+				}
+				null
 			}
 			else -> null
 		}
@@ -151,3 +167,9 @@ class TeamSummary(val teamName : String, val ids : List<Long>)
 
 @Serializable
 class RoundAnswer(val team : String, val answer : String)
+
+@Serializable
+class TeamRenameMessage(val oldName : String, val newName : String)
+
+@Serializable
+class AddDiscordMembersMessage(val team : String, val discordMembers : List<String>)
