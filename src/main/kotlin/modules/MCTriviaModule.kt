@@ -83,8 +83,12 @@ class MCTriviaModule : ListenerModule(), ContactableModule {
 			"RenameTeam" -> {
 				val obj = Json.decodeFromString<TeamRenameMessage>(body)
 				for (participant in discordParticipants) {
-					if (participant.team == obj.oldName)
+					if (participant.team == obj.oldName) {
 						participant.team = obj.newName
+						participant.user.openPrivateChannel().queue {
+							it.sendMessage("team name changed to \"${obj.newName}\"").complete()
+						}
+					}
 				}
 				null
 			}
@@ -94,6 +98,9 @@ class MCTriviaModule : ListenerModule(), ContactableModule {
 				for (member in obj.discordMembers) {
 					val user = getBot().getGuild().members.firstOrNull {it.effectiveName == member} ?: continue
 					discordParticipants.add(TriviaParticipant(user.user, obj.team))
+					user.user.openPrivateChannel().queue {
+						it.sendMessage("added to trivia team \"${obj.team}\"").complete()
+					}
 				}
 				null
 			}
