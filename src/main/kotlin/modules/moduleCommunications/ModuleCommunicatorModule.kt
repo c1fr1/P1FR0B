@@ -43,28 +43,36 @@ class ModuleCommunicatorModule(val port : Int = IDS["MODULE_COMMUNICATOR_PORT"]!
 					}
 					try {
 						thread {
-							var messageString = ""
-							while (conn.isConnected) {
-								val nextByte = conn.getInputStream().read()
-								if (nextByte != 0) {
-									messageString += nextByte.toChar()
-								} else break
-							}
-							val targetModuleID = messageString.substringBefore("|").lowercase().replace(" ", "-")
-							val payload = messageString.substringAfter("|")
-							Logger.verbose("received message for $targetModuleID")
-							getBot().getModules().firstOrNull { it.id == targetModuleID }?.let { targetModule ->
-								if (targetModule is ContactableModule) {
-									targetModule.receiveMessage(payload)?.let { response ->
-										conn.getOutputStream().write(response.toByteArray())
-									}
-								} else {
-									Logger.warn("attempt was made to contact \"$targetModuleID\" which is not a ContactableModule")
+							try {
+								var messageString = ""
+								while (conn.isConnected) {
+									val nextByte = conn.getInputStream().read()
+									if (nextByte != 0) {
+										messageString += nextByte.toChar()
+									} else break
 								}
-							} ?: {
-								Logger.warn("attempt was made to contact \"$targetModuleID\" which is not a known module")
+								val targetModuleID = messageString.substringBefore("|").lowercase().replace(" ", "-")
+								val payload = messageString.substringAfter("|")
+								Logger.verbose("received message for $targetModuleID")
+								getBot().getModules().firstOrNull { it.id == targetModuleID }?.let { targetModule ->
+									if (targetModule is ContactableModule) {
+										targetModule.receiveMessage(payload)?.let { response ->
+											conn.getOutputStream().write(response.toByteArray())
+										}
+									} else {
+										Logger.warn("attempt was made to contact \"$targetModuleID\" which is not a ContactableModule")
+									}
+								} ?: {
+									Logger.warn("attempt was made to contact \"$targetModuleID\" which is not a known module")
+								}
+								conn.close()
+							} catch (e : SocketException) {
+								Logger.warn("Socket error thrown when receiving message from ${conn.inetAddress}")
+								Logger.logError(e)
+							} catch (e : Throwable) {
+								Logger.warn("Unknown error thrown when receiving message from ${conn.inetAddress}")
+								Logger.logError(e)
 							}
-							conn.close()
 						}
 
 					} catch (e : SocketException) {

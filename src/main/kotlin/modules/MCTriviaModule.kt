@@ -57,8 +57,11 @@ class MCTriviaModule : ListenerModule(), ContactableModule {
 				}
 				for (participant in discordParticipants) {
 					participant.currentAnswer = null
-					participant.user.openPrivateChannel().queue {
+					participant.user.openPrivateChannel().queue({
 						it.sendMessage(roundSummary.question).complete()
+					}) {
+						Logger.error("Error opening private channel")
+						Logger.logError(it)
 					}
 				}
 				Json.encodeToString(discordParticipants.map { it.team })
@@ -70,8 +73,11 @@ class MCTriviaModule : ListenerModule(), ContactableModule {
 					}
 				}
 				for (participant in discordParticipants) {
-					participant.user.openPrivateChannel().queue {
+					participant.user.openPrivateChannel().queue({
 						it.sendMessage("Time up!").complete()
+					}) {
+						Logger.error("Error opening private channel")
+						Logger.logError(it)
 					}
 				}
 				val response = Json.encodeToString(discordParticipants.mapNotNull { it.currentAnswer?.let { ans -> RoundAnswer(it.team, ans)} })
@@ -85,8 +91,11 @@ class MCTriviaModule : ListenerModule(), ContactableModule {
 				for (participant in discordParticipants) {
 					if (participant.team == obj.oldName) {
 						participant.team = obj.newName
-						participant.user.openPrivateChannel().queue {
+						participant.user.openPrivateChannel().queue({
 							it.sendMessage("team name changed to \"${obj.newName}\"").complete()
+						}) {
+							Logger.error("Error opening private channel")
+							Logger.logError(it)
 						}
 					}
 				}
@@ -98,8 +107,11 @@ class MCTriviaModule : ListenerModule(), ContactableModule {
 				for (member in obj.discordMembers) {
 					val user = getBot().getGuild().members.firstOrNull {it.effectiveName == member} ?: continue
 					discordParticipants.add(TriviaParticipant(user.user, obj.team))
-					user.user.openPrivateChannel().queue {
+					user.user.openPrivateChannel().queue({
 						it.sendMessage("added to trivia team \"${obj.team}\"").complete()
+					}) {
+						Logger.error("Error opening private channel")
+						Logger.logError(it)
 					}
 				}
 				null
@@ -137,7 +149,10 @@ class MCTriviaModule : ListenerModule(), ContactableModule {
 			event.channel.sendMessage("Answer set")
 		} else {
 			event.channel.sendMessage("Answer changed")
-		}.queue()
+		}.queue({}) {
+			Logger.error("Error opening private channel")
+			Logger.logError(it)
+		}
 
 		participant.currentAnswer = event.message.contentDisplay
 	}
