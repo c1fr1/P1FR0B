@@ -104,6 +104,10 @@ class MCTriviaModule : ListenerModule(), ContactableModule {
 				}
 				null
 			}
+			"ResetTeams" -> {
+				endMcTrivia()
+				null
+			}
 			else -> null
 		}
 	}
