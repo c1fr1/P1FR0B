@@ -101,7 +101,6 @@ interface ListenerAdapter : EventListener {
 	fun onMessageUpdate(event: MessageUpdateEvent) {}
 	fun onMessageDelete(event: MessageDeleteEvent) {}
 	fun onMessageBulkDelete(event: MessageBulkDeleteEvent) {}
-	fun onMessageEmbed(event: MessageEmbedEvent) {}
 	fun onMessageReactionAdd(event: MessageReactionAddEvent) {}
 	fun onMessageReactionRemove(event: MessageReactionRemoveEvent) {}
 	fun onMessageReactionRemoveAll(event: MessageReactionRemoveAllEvent) {}
