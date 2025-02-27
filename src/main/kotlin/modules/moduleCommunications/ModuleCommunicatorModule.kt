@@ -21,6 +21,10 @@ class ModuleCommunicatorModule(val port : Int = IDS["MODULE_COMMUNICATOR_PORT"]!
 	var socket : ServerSocket? = null
 	var serverThread : Thread? = null
 
+	val handlerThreads = ArrayList<Pair<Thread, Long>>()
+
+	val threadTimeout = 30000
+
 	override fun onStartup(bot : Bot) : Boolean {
 		val address = IDS["SERVER_ADDRESS"].let { InetAddress.getByName(it) } ?: InetAddress.getLocalHost()
 		socket = ServerSocket(port, 50, address)
@@ -30,19 +34,33 @@ class ModuleCommunicatorModule(val port : Int = IDS["MODULE_COMMUNICATOR_PORT"]!
 		return super.onStartup(bot)
 	}
 
+	fun startHandlerThread(f : () -> Unit) {
+		val t = thread(block = f)
+		handlerThreads.add(Pair(t, System.currentTimeMillis()))
+	}
+
+	fun pruneThreads() {
+		handlerThreads.removeIf { (t, time) -> !t.isAlive }
+		handlerThreads.removeIf { (t, time) -> if (System.currentTimeMillis() - time > threadTimeout) {
+			t.interrupt()
+			true
+		} else false}
+	}
+
 	fun startServerThread() {
 		serverThread = thread {
 
 			Logger.verbose("starting communicator server thread on port $port")
 			try {
 				while (serverThread != null && socket != null) {
+					pruneThreads()
 					val conn = socket?.accept()
 					if (conn == null) {
 						Logger.verbose("failed to connect")
 						continue
 					}
 					try {
-						thread {
+						startHandlerThread {
 							try {
 								var messageString = ""
 								while (conn.isConnected) {
@@ -98,5 +116,11 @@ class ModuleCommunicatorModule(val port : Int = IDS["MODULE_COMMUNICATOR_PORT"]!
 			"server thread is null"
 		}
 		return "Communicator server is running on port $port. $threadInfo"
+	}
+
+	@SlashCommand("lists number of active handler threads", "lists number of active handler threads")
+	fun countThreads() : String {
+		pruneThreads()
+		return "there are currently ${handlerThreads.size} active threads"
 	}
 }
