@@ -1,6 +1,7 @@
 package modules.nyt
 
 import kotlin.math.max
+import kotlin.math.min
 
 class ActivityData<T : PerformanceData> (
 	val performanceData : T,
@@ -31,7 +32,7 @@ class ActivityData<T : PerformanceData> (
 		repeat(max(7 - offset, 0)) { i ->
 			recentParticipation[6 - i] = recentParticipation[6 - i - offset]
 		}
-		repeat(offset) {i ->
+		repeat(min(offset, recentParticipation.size)) {i ->
 			recentParticipation[i] = false
 		}
 		if (completedToday) recentParticipation[0] = true
